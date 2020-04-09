@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d3021c28-db36-47cd-bee3-e2de5ac23bc9" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="SBT">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Scala Class" />
+        <option value="Package Object" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1aBmmeqO0H8qE3Ig4V0xWnyLyZt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.bombsquad.model" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.bombsquad" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test" />
+      <recent name="$PROJECT_DIR$/src/main" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="ScalaTest.BoardSpec">
+    <configuration name="BoardSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="bombsquad-api" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="com.bombsquad.model.BoardSpec" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BoardSpec.Board should be able to flag a covered cell, and get it back to covered when trying to flag it again" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="bombsquad-api" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="com.bombsquad.model.BoardSpec" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BoardSpec.Board should fail trying to flag an uncovered cell" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="bombsquad-api" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="com.bombsquad.model.BoardSpec" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BoardSpec.Board should know when coordinates are in bounds" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="bombsquad-api" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="com.bombsquad.model.BoardSpec" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ScalaTests in 'scala'" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" nameIsGenerated="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="bombsquad-api" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="classBuf">
+        <list>
+          <option value="com.bombsquad.model.GameSpec" />
+          <option value="com.bombsquad.model.BoardSpec" />
+          <option value="com.bombsquad.model.StopWatchSpec" />
+          <option value="com.bombsquad.model.GameWorkflowSpec" />
+          <option value="com.bombsquad.model.GameSpec" />
+          <option value="com.bombsquad.model.StopWatchSpec" />
+          <option value="com.bombsquad.model.GameWorkflowSpec" />
+          <option value="com.bombsquad.model.BoardSpec" />
+        </list>
+      </option>
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testPackagePath" value="" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="ScalaTest.BoardSpec" />
+        <item itemvalue="ScalaTest.ScalaTests in 'scala'" />
+        <item itemvalue="ScalaTest.ScalaTests in 'scala'" />
+        <item itemvalue="ScalaTest.BoardSpec" />
+        <item itemvalue="ScalaTest.BoardSpec.Board should fail trying to flag an uncovered cell" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="reservation-server" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="root [file:/Users/raulbajales/development/bombsquad-api/]" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+              <ExternalProjectPojo>
+                <option name="name" value="reservation-server-build" />
+                <option name="path" value="$PROJECT_DIR$/project" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="modificationStamps">
+      <map>
+        <entry key="$PROJECT_DIR$" value="3172435370686" />
+        <entry key="$PROJECT_DIR$/build.sbt" value="2207393107" />
+        <entry key="$PROJECT_DIR$/project/build.properties" value="1396028727" />
+      </map>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d3021c28-db36-47cd-bee3-e2de5ac23bc9" name="Default Changelist" comment="" />
+      <created>1586217521693</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586217521693</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="0" y="65" width="1280" height="669" key="#Project_Structure" timestamp="1586223214125">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="0" y="65" width="1280" height="669" key="#Project_Structure/0.0.1280.800@0.0.1280.800" timestamp="1586223214125" />
+    <state x="55" y="-846" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1586387578261">
+      <screen x="-512" y="-1080" width="1920" height="1080" />
+    </state>
+    <state x="55" y="-846" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586387578261" />
+    <state x="378" y="173" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.0.1280.800@0.0.1280.800" timestamp="1586310491017" />
+    <state x="104" y="62" width="1071" height="732" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586311010142">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="104" y="62" width="1071" height="732" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.800@0.0.1280.800" timestamp="1586311010142" />
+    <state x="453" y="105" key="#com.intellij.ide.util.MemberChooser" timestamp="1586303326063">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="453" y="105" key="#com.intellij.ide.util.MemberChooser/0.0.1280.800@0.0.1280.800" timestamp="1586303326063" />
+    <state x="97" y="-721" width="467" height="276" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1586366485940">
+      <screen x="-512" y="-1080" width="1920" height="1080" />
+    </state>
+    <state x="97" y="-721" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/-512.-1080.1920.1080/0.23.1440.877@-512.-1080.1920.1080" timestamp="1586366485940" />
+    <state x="406" y="266" width="467" height="276" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1280.800@0.0.1280.800" timestamp="1586219201034" />
+    <state x="403" y="110" key="#xdebugger.evaluate" timestamp="1586223248677">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="403" y="110" key="#xdebugger.evaluate/0.0.1280.800@0.0.1280.800" timestamp="1586223248677" />
+    <state width="1238" height="195" key="GridCell.Tab.0.bottom" timestamp="1586396111599">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1878" height="268" key="GridCell.Tab.0.bottom/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586387506542" />
+    <state width="1878" height="268" key="GridCell.Tab.0.bottom/-512.-1080.1920.1080/0.23.1440.877@-512.-1080.1920.1080" timestamp="1586375729539" />
+    <state width="1238" height="195" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1586396111599" />
+    <state width="1238" height="195" key="GridCell.Tab.0.bottom/0.23.1280.777@0.23.1280.777" timestamp="1586391547712" />
+    <state width="1238" height="195" key="GridCell.Tab.0.center" timestamp="1586396111596">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1878" height="268" key="GridCell.Tab.0.center/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586387506539" />
+    <state width="1878" height="268" key="GridCell.Tab.0.center/-512.-1080.1920.1080/0.23.1440.877@-512.-1080.1920.1080" timestamp="1586375729537" />
+    <state width="1238" height="195" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1586396111596" />
+    <state width="1238" height="195" key="GridCell.Tab.0.center/0.23.1280.777@0.23.1280.777" timestamp="1586391547711" />
+    <state width="1238" height="195" key="GridCell.Tab.0.left" timestamp="1586396111594">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1878" height="268" key="GridCell.Tab.0.left/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586387506538" />
+    <state width="1878" height="268" key="GridCell.Tab.0.left/-512.-1080.1920.1080/0.23.1440.877@-512.-1080.1920.1080" timestamp="1586375729535" />
+    <state width="1238" height="195" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1586396111594" />
+    <state width="1238" height="195" key="GridCell.Tab.0.left/0.23.1280.777@0.23.1280.777" timestamp="1586391547709" />
+    <state width="1238" height="195" key="GridCell.Tab.0.right" timestamp="1586396111598">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state width="1878" height="268" key="GridCell.Tab.0.right/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586387506540" />
+    <state width="1878" height="268" key="GridCell.Tab.0.right/-512.-1080.1920.1080/0.23.1440.877@-512.-1080.1920.1080" timestamp="1586375729538" />
+    <state width="1238" height="195" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1586396111598" />
+    <state width="1238" height="195" key="GridCell.Tab.0.right/0.23.1280.777@0.23.1280.777" timestamp="1586391547712" />
+    <state width="1238" height="255" key="GridCell.Tab.1.bottom" timestamp="1586290385288">
+      <screen x="-512" y="-1080" width="1920" height="1080" />
+    </state>
+    <state width="1238" height="255" key="GridCell.Tab.1.bottom/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586290385288" />
+    <state width="1238" height="255" key="GridCell.Tab.1.bottom/0.0.1280.800@0.0.1280.800" timestamp="1586223268204" />
+    <state width="1238" height="255" key="GridCell.Tab.1.center" timestamp="1586290385286">
+      <screen x="-512" y="-1080" width="1920" height="1080" />
+    </state>
+    <state width="1238" height="255" key="GridCell.Tab.1.center/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586290385286" />
+    <state width="1238" height="255" key="GridCell.Tab.1.center/0.0.1280.800@0.0.1280.800" timestamp="1586223268202" />
+    <state width="1238" height="255" key="GridCell.Tab.1.left" timestamp="1586290385286">
+      <screen x="-512" y="-1080" width="1920" height="1080" />
+    </state>
+    <state width="1238" height="255" key="GridCell.Tab.1.left/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586290385286" />
+    <state width="1238" height="255" key="GridCell.Tab.1.left/0.0.1280.800@0.0.1280.800" timestamp="1586223268200" />
+    <state width="1238" height="255" key="GridCell.Tab.1.right" timestamp="1586290385287">
+      <screen x="-512" y="-1080" width="1920" height="1080" />
+    </state>
+    <state width="1238" height="255" key="GridCell.Tab.1.right/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586290385287" />
+    <state width="1238" height="255" key="GridCell.Tab.1.right/0.0.1280.800@0.0.1280.800" timestamp="1586223268203" />
+    <state x="305" y="124" width="670" height="676" key="search.everywhere.popup" timestamp="1586394760106">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="-54" y="-913" width="1005" height="913" key="search.everywhere.popup/-512.-1080.1920.1080/0.0.1440.900@-512.-1080.1920.1080" timestamp="1586386166707" />
+    <state x="305" y="124" width="670" height="676" key="search.everywhere.popup/0.0.1280.800@0.0.1280.800" timestamp="1586394760106" />
+  </component>
+</project>
