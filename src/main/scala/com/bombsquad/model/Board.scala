@@ -4,9 +4,8 @@ import com.bombsquad.AppConf
 
 import scala.annotation.tailrec
 
-case class Board(matrix: Array[Array[Cell]], bombs: Int) {
+case class Board(matrix: Array[Array[Cell]]) {
   require(matrix != null, "matrix is required")
-  require(bombs > 0, "You need at least 1 bomb on the board, no fun otherwise")
 
   def rows: Int = matrix.size
 
@@ -14,11 +13,15 @@ case class Board(matrix: Array[Array[Cell]], bombs: Int) {
 
   def totalCells: Int = rows * cols
 
-  require(bombs < totalCells, "Sorry, too much bombs")
+  def inBounds(row: Int, col: Int): Boolean = (col >= 0 && col < cols) && (row >= 0 && row < rows)
 
-  def inBounds(col: Int, row: Int): Boolean = (col >= 0 && col < cols) && (row >= 0 && col < rows)
-
-  def isAllUnCovered(): Boolean = matrix.map(_.count(_.status == Uncovered)).sum == (totalCells - bombs)
+  def isAllUnCovered(): Boolean = {
+    matrix.map(
+      _.count(
+        _.status == Covered
+      )
+    ).sum == 0
+  }
 
   def cellAt(row: Int, col: Int): Option[Cell] = {
     if (inBounds(row, col))
@@ -27,7 +30,8 @@ case class Board(matrix: Array[Array[Cell]], bombs: Int) {
       None
   }
 
-  def surroundingBombs(row: Int, col: Int): Int = Array(
+  def surroundingBombs(row: Int, col: Int): Int = {
+    Array(
       cellAt(row - 1, col - 1),
       cellAt(row - 1, col),
       cellAt(row - 1, col + 1),
@@ -36,9 +40,8 @@ case class Board(matrix: Array[Array[Cell]], bombs: Int) {
       cellAt(row + 1, col - 1),
       cellAt(row + 1, col),
       cellAt(row + 1, col + 1)
-  ).map(_.count(_.hasBomb)).sum
-
-  def surroundingsHasBomb(row: Int, col: Int): Boolean = surroundingBombs(row, col) > 0
+    ).map(_.count(_.status == HasBomb)).sum
+  }
 
   def flag(row: Int, col: Int): Unit = cellAt(row, col).map { cell =>
     if (!Array(Covered, Flagged).contains(cell.status))
@@ -48,9 +51,10 @@ case class Board(matrix: Array[Array[Cell]], bombs: Int) {
 
   def unCoverAndCheckForBomb(row: Int, col: Int): Option[Boolean] = {
     def unCover(board: Board, row: Int, col: Int): Unit = {
-      if (board.inBounds(col, row)) {
-        cellAt(row, col).map { cell =>
-          if (!cell.hasBomb && cell.status != Flagged && !board.surroundingsHasBomb(row, col)) {
+      cellAt(row, col).map { cell =>
+        val surroundingBombs = board.surroundingBombs(row, col)
+        if (cell.status == Covered)
+          if (surroundingBombs == 0) {
             board.matrix(row)(col) = cell.copy(status = Uncovered)
             unCover(board, row - 1, col - 1)
             unCover(board, row - 1, col)
@@ -60,58 +64,66 @@ case class Board(matrix: Array[Array[Cell]], bombs: Int) {
             unCover(board, row + 1, col - 1)
             unCover(board, row + 1, col)
             unCover(board, row + 1, col + 1)
+          } else {
+            board.matrix(row)(col) = cell.copy(status = HasSurroundingBombs(surroundingBombs))
           }
-        }
       }
     }
 
     cellAt(row, col).map { cell =>
       if (cell.status != Covered)
         throw new IllegalStateException(s"Cannot uncover cell ${cell}")
-
       unCover(this, row, col)
-
-      cell.hasBomb
+      cell.status == HasBomb
     }
   }
+
+  def countByStatus(status: CellStatus): Int = matrix.map(_.count(_.status == status)).sum
 }
 
 object Board {
 
   def createWithRandomlyBuriedBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols, bombs: Int = AppConf.defaultBombs): Board = {
-    val board = Board(Array.ofDim[Cell](rows, cols), bombs)
-    for (row <- 0 until board.rows)
-      for (col <- 0 until board.cols)
-        board.matrix(row)(col) = Cell(status = Covered)
-    spreadBombs(board)
+    require(bombs < (rows * cols), "Too much bombs")
+    val board = fill(newEmptyBoard(rows, cols))((_, _) => Cell(Covered))
+    spreadBombs(board, bombs)
     board
   }
 
-  def createWithSpecificBuriedBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols, buriedBombs: Set[(Int, Int)]): Board = {
-    val board = Board(Array.ofDim[Cell](rows, cols), buriedBombs.size)
-    for (row <- 0 until board.rows)
-      for (col <- 0 until board.cols)
-        board.matrix(row)(col) = Cell(Covered, buriedBombs.contains((row, col)))
-    board
+  def createWithSpecificBuriedBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols, bombs: Set[(Int, Int)]): Board = {
+    require(bombs.size < (rows * cols), "Too much bombs")
+    fill(newEmptyBoard(rows, cols))((row, col) => Cell(if (bombs.contains((row, col))) HasBomb else Covered))
   }
 
-  def spreadBombs(board: Board): Unit = {
-    val random = new scala.util.Random
+  def createWithoutBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols): Board =
+    fill(newEmptyBoard(rows, cols))((_, _) => Cell(Covered))
+
+  private def spreadBombs(board: Board, bombs: Int): Unit = {
+    val seed = new scala.util.Random
 
     @tailrec
     def buryBomb(remaining: Int): Unit = {
-      val row = random.nextInt(board.rows)
-      val col = random.nextInt(board.cols)
+      val row = seed.nextInt(board.rows)
+      val col = seed.nextInt(board.cols)
       if (remaining > 0)
-        if (board.matrix(row)(col).hasBomb)
+        if (board.matrix(row)(col).status == HasBomb)
           buryBomb(remaining)
         else {
-          board.matrix(row)(col) = Cell(hasBomb = true)
+          board.matrix(row)(col) = Cell(HasBomb)
           buryBomb(remaining - 1)
         }
     }
 
-    buryBomb(board.bombs)
+    buryBomb(bombs)
+  }
+
+  private def newEmptyBoard(rows: Int, cols: Int): Board = Board(Array.ofDim[Cell](rows, cols))
+
+  private def fill(board: Board)(f: (Int, Int) => Cell): Board = {
+    for (row <- 0 until board.rows)
+      for (col <- 0 until board.cols)
+        board.matrix(row)(col) = f(row, col)
+    board
   }
 }
 

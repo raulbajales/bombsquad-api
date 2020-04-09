@@ -9,7 +9,7 @@ lazy val root = (project in file(".")).
       organization    := "com.bombsquad",
       scalaVersion    := "2.12.7"
     )),
-    name := "reservation-server",
+    name := "bombsqad-api",
     libraryDependencies ++= Seq(
       "com.typesafe.akka"          %% "akka-http"                % akkaHttpVersion,
       "com.typesafe.akka"          %% "akka-http-spray-json"     % akkaHttpVersion,
