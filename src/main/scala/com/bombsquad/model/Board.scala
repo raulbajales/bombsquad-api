@@ -45,19 +45,19 @@ case class Board(matrix: Array[Array[Cell]]) {
   }
 
   def unCoverAndCheckForBomb(row: Int, col: Int): Option[Boolean] = {
-    def unCover(board: Board, row: Int, col: Int): Unit = cellAt(row, col).map { cell =>
+    def unCover(row: Int, col: Int): Unit = cellAt(row, col).map { cell =>
       if (cell.isSafeAndCovered) {
-        val newCell = cell.copy(covered = false, surroundingBombs = board.surroundingBombs(row, col))
-        board.matrix(row)(col) = newCell
+        val newCell = cell.copy(covered = false, surroundingBombs = surroundingBombs(row, col))
+        matrix(row)(col) = newCell
         if (newCell.surroundingBombs == 0) {
-          unCover(board, row - 1, col - 1)
-          unCover(board, row - 1, col)
-          unCover(board, row - 1, col + 1)
-          unCover(board, row, col - 1)
-          unCover(board, row, col + 1)
-          unCover(board, row + 1, col - 1)
-          unCover(board, row + 1, col)
-          unCover(board, row + 1, col + 1)
+          unCover(row - 1, col - 1)
+          unCover(row - 1, col)
+          unCover(row - 1, col + 1)
+          unCover(row, col - 1)
+          unCover(row, col + 1)
+          unCover(row + 1, col - 1)
+          unCover(row + 1, col)
+          unCover(row + 1, col + 1)
         }
       }
     }
@@ -65,7 +65,7 @@ case class Board(matrix: Array[Array[Cell]]) {
     cellAt(row, col).map { cell =>
       if (!cell.covered)
         throw new IllegalStateException(s"Cannot uncover cell ${cell}")
-      unCover(this, row, col)
+      unCover(row, col)
       cell.hasBomb
     }
   }
