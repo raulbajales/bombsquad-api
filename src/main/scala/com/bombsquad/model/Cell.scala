@@ -1,10 +1,7 @@
 package com.bombsquad.model
 
-sealed trait CellStatus
-case object Covered extends CellStatus
-case object Uncovered extends CellStatus
-case object Flagged extends CellStatus
-case object HasBomb extends CellStatus
-case class HasSurroundingBombs(amount: Int) extends CellStatus
+case class Cell(covered: Boolean = true, hasBomb: Boolean = false, flagged: Boolean = false, surroundingBombs: Int = 0) {
+  def isSafeAndCovered: Boolean = covered && !hasBomb && !flagged
+}
 
-case class Cell(status: CellStatus = Covered)
+

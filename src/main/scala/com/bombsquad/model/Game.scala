@@ -1,34 +1,34 @@
 package com.bombsquad.model
 
-case class Game(id: String, workflow: GameWorkflow = GameWorkflow(), user: User, board: Board = Board.createWithRandomlyBuriedBombs()) {
-  require(id != null && !id.isEmpty, "id is needed")
+case class Game(id: String = Game.randomGameId(), workflow: GameWorkflow = GameWorkflow(), user: User = User.guest(), board: Board = Board.createWithRandomlyBuriedBombs()) {
+  def start(): Unit = workflow.moveTo(Running)
+
+  def pause(): Unit = workflow.moveTo(Paused)
+
+  def stop(stopCause: GameStoppedState): Unit = workflow.moveTo(stopCause)
+
+  def flagCell(row: Int, col: Int): Unit = {
+    if (workflow.currentState != Running)
+      throw new IllegalStateException(s"Cannot flag/unflag cell, state must be Running but it is ${workflow.currentState}")
+
+    board.flag(row, col)
+  }
+
+  def unCoverCell(row: Int, col: Int): Unit = {
+    if (workflow.currentState != Running)
+      throw new IllegalStateException(s"Cannot uncover cell, state must be Running but it is ${workflow.currentState}")
+
+    board.unCoverAndCheckForBomb(row, col).map { hasBomb =>
+      if (hasBomb)
+        workflow.moveTo(Lost)
+      else if (board.allSafeCellsAreUnCovered())
+        workflow.moveTo(Won)
+    }
+  }
+
+  def isFinished(): Boolean = workflow.currentState == Won || workflow.currentState == Lost || workflow.currentState == Cancelled
 }
 
 object Game {
-
-  def start(game: Game): Unit = game.workflow.moveTo(Running)
-
-  def pause(game: Game): Unit = game.workflow.moveTo(Paused)
-
-  def stop(game: Game, stopCause: GameStoppedState): Unit = game.workflow.moveTo(stopCause)
-
-  def flagCell(game: Game, row: Int, col: Int): Unit = {
-    if (game.workflow.currentState != Running)
-      throw new IllegalStateException(s"Cannot flag/unflag cell, state must be Running but it is ${game.workflow.currentState}")
-
-    game.board.flag(row, col)
-  }
-
-  def unCoverCell(game: Game, row: Int, col: Int): Unit = {
-    if (game.workflow.currentState != Running)
-        throw new IllegalStateException(s"Cannot uncover cell, state must be Running but it is ${game.workflow.currentState}")
-
-    game.board.unCoverAndCheckForBomb(row, col).map { hasBomb =>
-      if (hasBomb)
-        game.workflow.moveTo(Lost)
-      else
-        if (game.board.isAllUnCovered())
-          game.workflow.moveTo(Won)
-    }
-  }
+  def randomGameId(): String = s"GAME-${System.currentTimeMillis()}"
 }
