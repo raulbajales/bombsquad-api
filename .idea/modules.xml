@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsquad-api.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsquad-api.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsquad-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsquad-api-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsqad-api.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsqad-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsqad-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsqad-api-build.iml" />
     </modules>
   </component>
 </project>
