@@ -71,7 +71,7 @@ case class Board(matrix: Array[Array[Cell]]) {
   }
 }
 
-object Board {
+object BoardFactory {
 
   def createWithRandomlyBuriedBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols, bombs: Int = AppConf.defaultBombs): Board = {
     require(bombs < (rows * cols), "Too much bombs")

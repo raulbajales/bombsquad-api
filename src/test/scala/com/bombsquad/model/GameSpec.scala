@@ -17,8 +17,8 @@ class GameSpec extends FlatSpec with Matchers {
   "Game" should "be able to be cancelled" in {
     val game = Game()
     game.start()
-    game.stop(Cancelled)
-    game.isFinished() should be (true)
+    game.cancel()
+    game.isFinished should be (true)
     game.workflow.currentState should be (Cancelled)
   }
 
@@ -42,7 +42,7 @@ class GameSpec extends FlatSpec with Matchers {
     */
 
     // Game is created, with some bombs
-    val game = Game(board = Board.createWithSpecificBuriedBombs(4, 4, Set(
+    val game = Game(board = BoardFactory.createWithSpecificBuriedBombs(4, 4, Set(
       (0, 3),
       (1, 0),
       (2, 2)
@@ -131,7 +131,7 @@ class GameSpec extends FlatSpec with Matchers {
         2 | 1 2 B U
         3 | U 1 U U
     */
-    game.isFinished() should be (true)
+    game.isFinished should be (true)
     game.workflow.currentState should be (Won)
   }
 
@@ -169,7 +169,7 @@ class GameSpec extends FlatSpec with Matchers {
     // User uncovers cell with bomb on (1, 0)
     game.unCoverCell(1, 0)
 
-    game.isFinished() should be (true)
+    game.isFinished should be (true)
     game.workflow.currentState should be (Lost)
   }
 }
