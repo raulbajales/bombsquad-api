@@ -90,9 +90,13 @@ trait GameService {
     findGameIdsByUsername(username)
   }
 
-  def gameState(gameId: String): Future[Game] = {
+  def gameState(username: String, gameId: String): Future[Game] = {
+    require(username != null && username.isBlank, "username is required")
     require(gameId != null && gameId.isBlank, "username is required")
-    findGameById(gameId)
+    findGameIdsByUsername(username).flatMap { gameIds =>
+      checkGameIds(username, gameIds, gameId)
+      findGameById(gameId)
+    }
   }
 
   private def checkGameIds(username: String, gameIds: Seq[String], gameId: String): Unit =

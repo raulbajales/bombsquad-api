@@ -1,7 +1,7 @@
 package com.bombsquad.service
 
-import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, Behavior}
 import com.bombsquad.model.{Game, User}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,7 +24,7 @@ package object GameProtocol {
 
   final case class ListGamesForCommand(username: String, replyTo: ActorRef[Seq[String]]) extends Command
 
-  final case class GameStateCommand(gameId: String, replyTo: ActorRef[Game]) extends Command
+  final case class GameStateCommand(username: String, gameId: String, replyTo: ActorRef[Game]) extends Command
 }
 
 trait GameActor {
@@ -52,7 +52,7 @@ trait GameActor {
     case GameProtocol.ListGamesForCommand(username, replyTo) =>
       listGamesFor(username).map(replyTo ! _)
       Behaviors.same
-    case GameProtocol.GameStateCommand(gameId, replyTo) =>
-      gameState(gameId).map(replyTo ! _)
+    case GameProtocol.GameStateCommand(username, gameId, replyTo) =>
+      gameState(username, gameId).map(replyTo ! _)
       Behaviors.same  }
 }
