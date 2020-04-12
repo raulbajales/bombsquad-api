@@ -8,7 +8,7 @@ object JsonFormats {
 
   implicit object GameStateFormat extends JsonFormat[GameState] {
     def write(gameState: GameState): JsString =
-      JsString(gameState.toString())
+      JsString(gameState.name)
 
     def read(value: JsValue): GameState = value match {
       case JsString(value) => value match {
