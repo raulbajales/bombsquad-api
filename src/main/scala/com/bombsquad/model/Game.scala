@@ -11,14 +11,14 @@ case class Game(id: String = s"GAME-${System.currentTimeMillis()}",
   def cancel(): Unit = workflow.moveTo(Cancelled)
 
   def flagCell(row: Int, col: Int): Unit = {
-    if (workflow.currentState != Running)
+    if (workflow.currentState != Running.name)
       throw new IllegalStateException(s"Cannot flag/unflag cell, state must be Running but it is ${workflow.currentState}")
 
     board.flag(row, col)
   }
 
   def unCoverCell(row: Int, col: Int): Unit = {
-    if (workflow.currentState != Running)
+    if (workflow.currentState != Running.name)
       throw new IllegalStateException(s"Cannot uncover cell, state must be Running but it is ${workflow.currentState}")
 
     board.unCoverAndCheckForBomb(row, col).map { hasBomb =>
@@ -29,5 +29,5 @@ case class Game(id: String = s"GAME-${System.currentTimeMillis()}",
     }
   }
 
-  def isFinished: Boolean = workflow.currentState == Won || workflow.currentState == Lost || workflow.currentState == Cancelled
+  def isFinished: Boolean = Set(Won.name, Lost.name, Cancelled.name).contains(workflow.currentState)
 }

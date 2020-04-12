@@ -21,9 +21,6 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
 
   private implicit val timeout: Timeout = Timeout.create(AppConf.routesAskTimeout)
 
-  def sugnupUser(user: User): Future[User] =
-    delegate ? (GameProtocol.SignupUserCommand(user, _))
-
   val routes: Route = pathPrefix("bombsquad") {
     path("users") {
       //  Signup user:
@@ -31,7 +28,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
       post {
         entity(as[User]) { user =>
           logger.debug(s"Will create user $user")
-          onSuccess(sugnupUser(user))(complete(StatusCodes.Created, _))
+          onSuccess(signupUser(user))(complete(StatusCodes.Created, _))
         }
       }
     } ~
@@ -48,7 +45,6 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           // List games for
           // GET /bombsquad/users/{username}/games
           get {
-            logger.debug(s"Will list game ids for user $username")
             onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
           }
         )
@@ -96,6 +92,9 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
         }
       }
   }
+
+  def signupUser(user: User): Future[User] =
+    delegate ? (GameProtocol.SignupUserCommand(user, _))
 
   def startNewGame(username: String, gameReq: GameRequest): Future[String] =
     delegate ? (GameProtocol.StartNewGameCommand(username, gameReq.rows, gameReq.cols, gameReq.bombs, _))

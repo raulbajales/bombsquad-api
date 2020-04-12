@@ -16,7 +16,7 @@ case class Board(matrix: Array[Array[Cell]]) {
 
   def inBounds(row: Int, col: Int): Boolean = (col >= 0 && col < cols) && (row >= 0 && row < rows)
 
-  def allSafeCellsAreUnCovered(): Boolean = matrix.map(_.count(_.isSafeAndCovered)).sum == 0
+  def allSafeCellsAreUnCovered(): Boolean = matrix.map(_.count(CellUtils.safeAndCovered(_))).sum == 0
 
   def cellAt(row: Int, col: Int): Option[Cell] = {
     if (inBounds(row, col))
@@ -46,7 +46,7 @@ case class Board(matrix: Array[Array[Cell]]) {
 
   def unCoverAndCheckForBomb(row: Int, col: Int): Option[Boolean] = {
     def unCover(row: Int, col: Int): Unit = cellAt(row, col).map { cell =>
-      if (cell.isSafeAndCovered) {
+      if (CellUtils.safeAndCovered(cell)) {
         val newCell = cell.copy(covered = false, surroundingBombs = surroundingBombs(row, col))
         matrix(row)(col) = newCell
         if (newCell.surroundingBombs == 0) {

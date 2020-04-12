@@ -15,12 +15,11 @@ class StopWatchSpec extends FlatSpec with Matchers {
     stopWatch.start()
     Thread.sleep(1000)
     stopWatch.stop()
-    stopWatch.elapsed.toSeconds should be (Duration.ofSeconds(2).toSeconds)
+    stopWatch.elapsedInSeconds should be(Duration.ofSeconds(2).toSeconds)
   }
 
   "StopWatch" should "count elapsed time even with multiple pauses, considering a current elapsed time" in {
-    val stopWatch = StopWatch()
-    stopWatch.elapsed = Duration.ofSeconds(2)
+    val stopWatch = StopWatch(2)
     stopWatch.start()
     Thread.sleep(1000)
     stopWatch.stop()
@@ -28,6 +27,6 @@ class StopWatchSpec extends FlatSpec with Matchers {
     stopWatch.start()
     Thread.sleep(1000)
     stopWatch.stop()
-    stopWatch.elapsed.toSeconds should be (Duration.ofSeconds(4).toSeconds)
+    stopWatch.elapsedInSeconds should be(Duration.ofSeconds(4).toSeconds)
   }
 }

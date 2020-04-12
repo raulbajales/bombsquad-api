@@ -44,13 +44,22 @@ case object Lost extends GameStoppedState {
   override val name: String = "LOST"
 }
 
-case class GameWorkflow(var currentState: GameState = NotStarted,
+case class GameWorkflow(var currentState: String = NotStarted.name,
                         stopWatch: StopWatch = StopWatch()) {
   def moveTo(nextState: GameState): Unit = {
-    if (!currentState.canMoveTo.contains(nextState))
+    if (!gameStateByName(currentState).canMoveTo.contains(nextState))
       throw new IllegalStateException(s"Cannot move from ${currentState} to ${nextState}")
-    currentState = nextState
-    currentState.activity(stopWatch)
+    currentState = nextState.name
+    gameStateByName(currentState).activity(stopWatch)
+  }
+
+  def gameStateByName(stateName: String): GameState = stateName match {
+    case NotStarted.name => NotStarted
+    case Running.name => Running
+    case Paused.name => Paused
+    case Cancelled.name => Cancelled
+    case Won.name => Won
+    case Lost.name => Lost
   }
 }
 

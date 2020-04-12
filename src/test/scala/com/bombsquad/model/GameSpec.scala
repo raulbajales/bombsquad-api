@@ -19,7 +19,7 @@ class GameSpec extends FlatSpec with Matchers {
     game.start()
     game.cancel()
     game.isFinished should be (true)
-    game.workflow.currentState should be (Cancelled)
+    game.workflow.currentState should be (Cancelled.name)
   }
 
   "Game" should "be won by a guest user when all safe cells are uncovered" in {
@@ -47,11 +47,11 @@ class GameSpec extends FlatSpec with Matchers {
       (1, 0),
       (2, 2)
     )))
-    game.workflow.currentState should be (NotStarted)
+    game.workflow.currentState should be (NotStarted.name)
 
     // Game starts
     game.start()
-    game.workflow.currentState should be (Running)
+    game.workflow.currentState should be (Running.name)
 
     // User uncovers cell on (0, 0)
     game.unCoverCell(0, 0)
@@ -104,12 +104,12 @@ class GameSpec extends FlatSpec with Matchers {
     // Game is paused for 1 sec
     game.pause()
     Thread.sleep(1000)
-    game.workflow.currentState should be (Paused)
+    game.workflow.currentState should be (Paused.name)
 
     // Game is restarted
     game.start()
     Thread.sleep(1000)
-    game.workflow.currentState should be (Running)
+    game.workflow.currentState should be (Running.name)
 
     // User uncovers remaining cells
     game.unCoverCell(3, 3)
@@ -132,7 +132,7 @@ class GameSpec extends FlatSpec with Matchers {
         3 | U 1 U U
     */
     game.isFinished should be (true)
-    game.workflow.currentState should be (Won)
+    game.workflow.currentState should be (Won.name)
   }
 
   "Game" should "be lost by a guest user when a cell with a bomb is uncovered" in {
@@ -155,21 +155,21 @@ class GameSpec extends FlatSpec with Matchers {
     */
 
     // Game is created, with some bombs
-    val game = Game(board = Board.createWithSpecificBuriedBombs(4, 4, Set(
+    val game = Game(board = BoardFactory.createWithSpecificBuriedBombs(4, 4, Set(
       (0, 3),
       (1, 0),
       (2, 2)
     )))
-    game.workflow.currentState should be (NotStarted)
+    game.workflow.currentState should be (NotStarted.name)
 
     // Game starts
     game.start()
-    game.workflow.currentState should be (Running)
+    game.workflow.currentState should be (Running.name)
 
     // User uncovers cell with bomb on (1, 0)
     game.unCoverCell(1, 0)
 
     game.isFinished should be (true)
-    game.workflow.currentState should be (Lost)
+    game.workflow.currentState should be (Lost.name)
   }
 }

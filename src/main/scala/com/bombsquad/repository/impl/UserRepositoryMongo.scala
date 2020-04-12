@@ -4,25 +4,22 @@ import com.bombsquad.model.User
 import com.bombsquad.repository.UserRepository
 import com.sfxcode.nosql.mongo.MongoDAO
 import com.sfxcode.nosql.mongo.database.DatabaseProvider
-import org.bson.codecs.configuration.CodecRegistries.fromProviders
-import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.model.Filters._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait UserRepositoryMongo extends UserRepository {
-
-  object delegate extends MongoDAO[User](DatabaseProvider("mongodb", fromProviders(classOf[User])), "users")
+trait UserRepositoryMongo extends UserRepository with MongoCodecRegistry {
 
   override def createUser(user: User): Future[User] = {
     require(user != null, "user is required")
-    delegate.insertOne(user)
-    Future(user)
+    UserMongoDao.insertOne(user).head().map(_ => user)
   }
 
   override def findUserByUserame(username: String): Future[User] = {
-    require(username != null && username.isBlank, "username is required")
-    delegate.find(equal("username", username)).head()
+    require(username != null && !username.isBlank, "username is required")
+    UserMongoDao.find(equal("username", username)).head()
   }
+
+  object UserMongoDao extends MongoDAO[User](DatabaseProvider("mongodb", codecRegistry), "users")
 }

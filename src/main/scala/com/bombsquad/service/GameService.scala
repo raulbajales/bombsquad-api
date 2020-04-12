@@ -20,7 +20,7 @@ trait GameService {
                    rows: Int = AppConf.defaultRows,
                    cols: Int = AppConf.defaultRows,
                    bombs: Int = AppConf.defaultBombs): Future[String] = {
-    require(username != null && username.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
     findUserByUserame(username).flatMap { _ =>
       createGame(username, rows, cols, bombs).flatMap { game =>
         game.start()
@@ -31,8 +31,8 @@ trait GameService {
 
   def pauseGame(username: String,
                 gameId: String): Future[String] = {
-    require(username != null && username.isBlank, "username is required")
-    require(gameId != null && gameId.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
+    require(gameId != null && !gameId.isBlank, "username is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
@@ -44,8 +44,8 @@ trait GameService {
 
   def cancelGame(username: String,
                  gameId: String): Future[String] = {
-    require(username != null && username.isBlank, "username is required")
-    require(gameId != null && gameId.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
+    require(gameId != null && !gameId.isBlank, "username is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
@@ -59,8 +59,8 @@ trait GameService {
                gameId: String,
                row: Int,
                col: Int): Future[String] = {
-    require(username != null && username.isBlank, "username is required")
-    require(gameId != null && gameId.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
+    require(gameId != null && !gameId.isBlank, "username is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
@@ -74,8 +74,8 @@ trait GameService {
                   gameId: String,
                   row: Int,
                   col: Int): Future[String] = {
-    require(username != null && username.isBlank, "username is required")
-    require(gameId != null && gameId.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
+    require(gameId != null && !gameId.isBlank, "username is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
@@ -86,13 +86,13 @@ trait GameService {
   }
 
   def listGamesFor(username: String): Future[Seq[String]] = {
-    require(username != null && username.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
     findGameIdsByUsername(username)
   }
 
   def gameState(username: String, gameId: String): Future[Game] = {
-    require(username != null && username.isBlank, "username is required")
-    require(gameId != null && gameId.isBlank, "username is required")
+    require(username != null && !username.isBlank, "username is required")
+    require(gameId != null && !gameId.isBlank, "username is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId)
