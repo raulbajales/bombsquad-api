@@ -1,14 +1,12 @@
 package com.bombsquad
 
-import java.time.Duration
-
 import com.bombsquad.controller.GameRequest
 import com.bombsquad.model._
 import spray.json.{DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat}
 
 object JsonFormats {
 
-  implicit object GaeStateFormat extends JsonFormat[GameState] {
+  implicit object GameStateFormat extends JsonFormat[GameState] {
     def write(gameState: GameState): JsString =
       JsString(gameState.toString())
 
@@ -21,16 +19,6 @@ object JsonFormats {
         case Won.name => Won
         case Lost.name => Lost
       }
-      case _ => throw new RuntimeException("GameState expected")
-    }
-  }
-
-  implicit object DurationFormat extends JsonFormat[Duration] {
-    def write(duration: Duration): JsString =
-      JsString(duration.toSeconds.toString)
-
-    def read(value: JsValue): Duration = value match {
-      case JsString(value) => Duration.ofSeconds(value.toLong)
       case _ => throw new RuntimeException("GameState expected")
     }
   }
