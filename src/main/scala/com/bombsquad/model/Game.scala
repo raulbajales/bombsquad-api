@@ -1,6 +1,8 @@
 package com.bombsquad.model
 
-case class Game(id: String = s"GAME-${System.currentTimeMillis()}",
+import org.mongodb.scala.bson.ObjectId
+
+case class Game(_id: ObjectId = new ObjectId(),
                 username: String = s"GUEST_USER-${System.currentTimeMillis()}",
                 workflow: GameWorkflow = GameWorkflow(),
                 board: Board = BoardFactory.createWithRandomlyBuriedBombs()) {

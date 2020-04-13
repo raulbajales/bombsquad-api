@@ -4,7 +4,7 @@ import com.bombsquad.AppConf
 
 import scala.annotation.tailrec
 
-case class Board(matrix: Array[Array[Cell]]) {
+case class Board(var matrix: List[List[Cell]]) {
   require(matrix != null, "matrix is required")
   require(matrix.size > 0, "matrix should have at least one row")
 
@@ -25,6 +25,8 @@ case class Board(matrix: Array[Array[Cell]]) {
       None
   }
 
+  def replaceCell(row: Int, col: Int, cell: Cell): Unit = matrix = matrix.updated(row, matrix(row).updated(col, cell))
+
   def surroundingBombs(row: Int, col: Int): Int = {
     Array(
       cellAt(row - 1, col - 1),
@@ -41,14 +43,14 @@ case class Board(matrix: Array[Array[Cell]]) {
   def flag(row: Int, col: Int): Unit = cellAt(row, col).map { cell =>
     if (!cell.covered)
       throw new IllegalStateException(s"Cannot flag/unflag cell ${cell} because it's uncovered")
-    matrix(row)(col) = cell.copy(flagged = !cell.flagged)
+    replaceCell(row, col, cell.copy(flagged = !cell.flagged))
   }
 
   def unCoverAndCheckForBomb(row: Int, col: Int): Option[Boolean] = {
     def unCover(row: Int, col: Int): Unit = cellAt(row, col).map { cell =>
       if (CellUtils.safeAndCovered(cell)) {
         val newCell = cell.copy(covered = false, surroundingBombs = surroundingBombs(row, col))
-        matrix(row)(col) = newCell
+        replaceCell(row, col, newCell)
         if (newCell.surroundingBombs == 0) {
           unCover(row - 1, col - 1)
           unCover(row - 1, col)
@@ -99,7 +101,7 @@ object BoardFactory {
         if (board.matrix(row)(col).hasBomb)
           buryBomb(remaining)
         else {
-          board.matrix(row)(col) = Cell(hasBomb = true)
+          board.replaceCell(row, col, Cell(hasBomb = true))
           buryBomb(remaining - 1)
         }
     }
@@ -107,12 +109,16 @@ object BoardFactory {
     buryBomb(bombs)
   }
 
-  private def newEmptyBoard(rows: Int, cols: Int): Board = Board(Array.ofDim[Cell](rows, cols))
+  private def newEmptyBoard(rows: Int, cols: Int): Board = Board(
+    (0 until rows).map(_ => (
+      0 until cols).map(_ => Cell()).toList
+    ).toList
+  )
 
   private def fill(board: Board)(f: (Int, Int) => Cell): Board = {
     for (row <- 0 until board.rows)
       for (col <- 0 until board.cols)
-        board.matrix(row)(col) = f(row, col)
+        board.replaceCell(row, col, f(row, col))
     board
   }
 }

@@ -55,6 +55,7 @@ class GameSpec extends FlatSpec with Matchers {
 
     // User uncovers cell on (0, 0)
     game.unCoverCell(0, 0)
+    game.isFinished should be(false)
 
     /*
         Now the board should be like this:
@@ -70,6 +71,7 @@ class GameSpec extends FlatSpec with Matchers {
 
     // User flag cell on (1, 0)
     game.flagCell(1, 0)
+    game.isFinished should be(false)
 
     /*
         Now the board should be like this:
@@ -85,6 +87,7 @@ class GameSpec extends FlatSpec with Matchers {
 
     // User uncovers cell on (3, 0)
     game.unCoverCell(3, 0)
+    game.isFinished should be(false)
 
     /*
         Now the board should be like this:
@@ -104,12 +107,14 @@ class GameSpec extends FlatSpec with Matchers {
     // Game is paused for 1 sec
     game.pause()
     Thread.sleep(1000)
-    game.workflow.currentState should be (Paused.name)
+    game.workflow.currentState should be(Paused.name)
+    game.isFinished should be(false)
 
     // Game is restarted
     game.start()
     Thread.sleep(1000)
-    game.workflow.currentState should be (Running.name)
+    game.workflow.currentState should be(Running.name)
+    game.isFinished should be(false)
 
     // User uncovers remaining cells
     game.unCoverCell(3, 3)

@@ -15,6 +15,14 @@ object AppConf {
   def routesAskTimeout: Duration = conf.getDuration("bombsquad-server.routes.ask-timeout")
 
   //
+  // MongoDB configurations:
+  //
+
+  def mongoDatabase: String = conf.getString("mongodb.database")
+
+  def mongoURI: String = conf.getString("mongodb.uri")
+
+  //
   // Game specific configurations:
   //
 

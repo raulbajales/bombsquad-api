@@ -3,6 +3,7 @@ package com.bombsquad.service
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 import com.bombsquad.model.{Game, User}
+import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -38,21 +39,21 @@ trait GameActor {
       startNewGame(username, rows, cols, bombs).map(replyTo ! _)
       Behaviors.same
     case GameProtocol.PauseGameCommand(username, gameId, replyTo) =>
-      pauseGame(username, gameId).map(replyTo ! _)
+      pauseGame(username, new ObjectId(gameId)).map(replyTo ! _)
       Behaviors.same
     case GameProtocol.CancelGameCommand(username, gameId, replyTo) =>
-      cancelGame(username, gameId).map(replyTo ! _)
+      cancelGame(username, new ObjectId(gameId)).map(replyTo ! _)
       Behaviors.same
     case GameProtocol.FlagCellCommand(username, gameId, row, col, replyTo) =>
-      flagCell(username, gameId, row, col).map(replyTo ! _)
+      flagCell(username, new ObjectId(gameId), row, col).map(replyTo ! _)
       Behaviors.same
     case GameProtocol.UncoverCellCommand(username, gameId, row, col, replyTo) =>
-      unCoverCell(username, gameId, row, col).map(replyTo ! _)
+      unCoverCell(username, new ObjectId(gameId), row, col).map(replyTo ! _)
       Behaviors.same
     case GameProtocol.ListGamesForCommand(username, replyTo) =>
       listGamesFor(username).map(replyTo ! _)
       Behaviors.same
     case GameProtocol.GameStateCommand(username, gameId, replyTo) =>
-      gameState(username, gameId).map(replyTo ! _)
+      gameState(username, new ObjectId(gameId)).map(replyTo ! _)
       Behaviors.same  }
 }

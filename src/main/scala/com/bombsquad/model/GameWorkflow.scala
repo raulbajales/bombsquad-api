@@ -48,7 +48,7 @@ case class GameWorkflow(var currentState: String = NotStarted.name,
                         stopWatch: StopWatch = StopWatch()) {
   def moveTo(nextState: GameState): Unit = {
     if (!gameStateByName(currentState).canMoveTo.contains(nextState))
-      throw new IllegalStateException(s"Cannot move from ${currentState} to ${nextState}")
+      throw new IllegalStateException(s"Cannot move from ${currentState} to ${nextState.name}")
     currentState = nextState.name
     gameStateByName(currentState).activity(stopWatch)
   }

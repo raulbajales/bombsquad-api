@@ -41,22 +41,23 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
               logger.debug(s"Will create game $gameRequest")
               onSuccess(startNewGame(username, gameRequest))(complete(StatusCodes.Created, _))
             }
-          },
-          // List games for
-          // GET /bombsquad/users/{username}/games
-          get {
-            onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
           }
+          //          ,
+          //          // List games for
+          //          // GET /bombsquad/users/{username}/games
+          //          get {
+          //            onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
+          //          }
         )
       } ~
       path("users" / Segment / "games" / Segment) { (username, gameId) =>
         concat(
           // Game state
           // GET /bombsquad/users/{username}/games/{gameId}
-          get {
-            logger.debug(s"Will get game state for user $username and game $gameId")
-            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
-          },
+          //          get {
+          //            logger.debug(s"Will get game state for user $username and game $gameId")
+          //            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
+          //          },
           // Pause game:
           // PUT /bombsquad/users/{username}/games/{gameId}/pause
           put {

@@ -5,39 +5,45 @@ import org.scalatest.{FlatSpec, Matchers}
 class BoardSpec extends FlatSpec with Matchers {
 
   "Board creation" should "fail if no matrix is set" in {
-    a [IllegalArgumentException] should be thrownBy {
+    a[IllegalArgumentException] should be thrownBy {
       Board(null)
     }
   }
 
   "Board creation" should "have spread randomly all the configured bombs" in {
-    BoardFactory.createWithRandomlyBuriedBombs(bombs = 30).matrix.map(_.count(_.hasBomb)).sum should be (30)
+    BoardFactory.createWithRandomlyBuriedBombs(bombs = 30).matrix.map(_.count(_.hasBomb)).sum should be(30)
   }
 
   "Board creation" should "have spread specifically all the configured bombs" in {
     val board = BoardFactory.createWithSpecificBuriedBombs(bombs = Set((0, 0), (1, 1), (2, 1)))
-    board.cellAt(0, 0).map(_.hasBomb should be (true))
-    board.cellAt(1, 1).map(_.hasBomb should be (true))
-    board.cellAt(2, 1).map(_.hasBomb should be (true))
+    board.cellAt(0, 0).map(_.hasBomb should be(true))
+    board.cellAt(1, 1).map(_.hasBomb should be(true))
+    board.cellAt(2, 1).map(_.hasBomb should be(true))
   }
 
   "Board creation" should "fail if too much bombs" in {
-    a [IllegalArgumentException] should be thrownBy {
+    a[IllegalArgumentException] should be thrownBy {
       BoardFactory.createWithRandomlyBuriedBombs(3, 3, 50)
     }
   }
 
   "Board creation" should "correctly calculate rows, cols and totalCells" in {
     val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
-    board.rows should be (5)
-    board.cols should be (5)
-    board.totalCells should be (25)
+    board.rows should be(5)
+    board.cols should be(5)
+    board.totalCells should be(25)
   }
 
   "Board" should "be able to get a cell based on in-bounds coordinates, or fail otherwise" in {
     val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
     board.cellAt(4, 4) should not be (null)
-    board.cellAt(100, 100) should be (None)
+    board.cellAt(100, 100) should be(None)
+  }
+
+  "Board" should "be able to replace a cell" in {
+    val board = BoardFactory.createWithoutBombs()
+    board.replaceCell(0, 0, Cell(hasBomb = true))
+    board.cellAt(0, 0).map(_.hasBomb should be(true))
   }
 
   "Board" should "know when all safe cells are uncovered" in {
@@ -61,35 +67,52 @@ class BoardSpec extends FlatSpec with Matchers {
         Digit = Number of surrounding bombs for this cell
     */
     val board = BoardFactory.createWithoutBombs(4, 4)
-    board.matrix(0) = Array(Cell(flagged = true), Cell(covered = false), Cell(covered = false), Cell(covered = false))
-    board.matrix(1) = Array(Cell(covered = false), Cell(covered = false, surroundingBombs = 1), Cell(covered = false, surroundingBombs = 2), Cell(covered = false, surroundingBombs = 2))
-    board.matrix(2) = Array(Cell(covered = false), Cell(covered = false, surroundingBombs = 2), Cell(hasBomb = true), Cell(flagged = true))
-    board.matrix(3) = Array(Cell(covered = false), Cell(covered = false, surroundingBombs = 2), Cell(hasBomb = true), Cell(covered = false, surroundingBombs = 2))
-    board.allSafeCellsAreUnCovered() should be (true)
+    List(
+      (0, 0, Cell(flagged = true)),
+      (0, 1, Cell(covered = false)),
+      (0, 2, Cell(covered = false)),
+      (0, 3, Cell(covered = false)),
+
+      (1, 0, Cell(covered = false)),
+      (1, 1, Cell(covered = false, surroundingBombs = 1)),
+      (1, 2, Cell(covered = false, surroundingBombs = 2)),
+      (1, 3, Cell(covered = false, surroundingBombs = 2)),
+
+      (2, 0, Cell(covered = false)),
+      (2, 1, Cell(covered = false, surroundingBombs = 2)),
+      (2, 2, Cell(hasBomb = true)),
+      (2, 3, Cell(flagged = true)),
+
+      (3, 0, Cell(covered = false)),
+      (3, 1, Cell(covered = false, surroundingBombs = 2)),
+      (3, 2, Cell(hasBomb = true)),
+      (3, 3, Cell(covered = false, surroundingBombs = 2))
+    ).map(tuple => board.replaceCell(tuple._1, tuple._2, tuple._3))
+    board.allSafeCellsAreUnCovered() should be(true)
   }
 
   "Board" should "know when coordinates are in bounds" in {
     val board = BoardFactory.createWithRandomlyBuriedBombs(5, 9)
-    board.inBounds(0, 0) should be (true)
-    board.inBounds(-1, -1) should be (false)
-    board.inBounds(5, 5) should be (false)
-    board.inBounds(4, 4) should be (true)
-    board.inBounds(4, 8) should be (true)
-    board.inBounds(4, 9) should be (false)
+    board.inBounds(0, 0) should be(true)
+    board.inBounds(-1, -1) should be(false)
+    board.inBounds(5, 5) should be(false)
+    board.inBounds(4, 4) should be(true)
+    board.inBounds(4, 8) should be(true)
+    board.inBounds(4, 9) should be(false)
   }
 
   "Board" should "be able to flag a covered cell, and get it back to covered when trying to flag it again" in {
     val board = BoardFactory.createWithoutBombs()
     board.flag(0, 0)
-    board.cellAt(0, 0).map(_.flagged should be (true))
+    board.cellAt(0, 0).map(_.flagged should be(true))
     board.flag(0, 0)
-    board.cellAt(0, 0).map(_.covered should be (true))
+    board.cellAt(0, 0).map(_.covered should be(true))
   }
 
   "Board" should "fail trying to flag an uncovered cell" in {
     val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
-    board.matrix(0)(0) = Cell(covered = false)
-    a [IllegalStateException] should be thrownBy {
+    board.replaceCell(0, 0, Cell(covered = false))
+    a[IllegalStateException] should be thrownBy {
       board.flag(0, 0)
     }
   }
@@ -121,9 +144,9 @@ class BoardSpec extends FlatSpec with Matchers {
       (1, 3),
       (2, 0),
       (3, 0)
-    ).map(pair => board.surroundingBombs(pair._1, pair._2) should be (1))
+    ).map(pair => board.surroundingBombs(pair._1, pair._2) should be(1))
 
-    board.surroundingBombs(2, 1) should be (3)
+    board.surroundingBombs(2, 1) should be(3)
   }
 
   "Board" should "be able to uncover surrounding cells when uncovering a safe cell" in {
@@ -157,6 +180,6 @@ class BoardSpec extends FlatSpec with Matchers {
     */
     val board = BoardFactory.createWithSpecificBuriedBombs(5, 5, Set((3, 3)))
     board.unCoverAndCheckForBomb(1, 1)
-    board.matrix.map(_.count(!_.covered)).sum should be (21)
+    board.matrix.map(_.count(!_.covered)).sum should be(21)
   }
 }

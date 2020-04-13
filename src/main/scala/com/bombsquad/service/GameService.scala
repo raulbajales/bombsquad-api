@@ -4,6 +4,7 @@ import com.bombsquad.AppConf
 import com.bombsquad.exception.GameDoesNotBelongToUserException
 import com.bombsquad.model.{Game, User}
 import com.bombsquad.repository.{GameRepository, UserRepository}
+import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -24,63 +25,52 @@ trait GameService {
     findUserByUserame(username).flatMap { _ =>
       createGame(username, rows, cols, bombs).flatMap { game =>
         game.start()
-        updateGame(game).map(_.id)
+        updateGame(game).map(_._id.toString)
       }
     }
   }
 
   def pauseGame(username: String,
-                gameId: String): Future[String] = {
+                gameId: ObjectId): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
-    require(gameId != null && !gameId.isBlank, "username is required")
+    require(gameId != null, "gameId is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
         game.pause()
-        updateGame(game).map(_.id)
+        updateGame(game).map(_._id.toString)
       }
     }
   }
 
+  private def checkGameIds(username: String, gameIds: Seq[String], gameId: ObjectId): Unit =
+    if (!gameIds.contains(gameId.toString))
+      throw GameDoesNotBelongToUserException(username, gameId.toString)
+
   def cancelGame(username: String,
-                 gameId: String): Future[String] = {
+                 gameId: ObjectId): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
-    require(gameId != null && !gameId.isBlank, "username is required")
+    require(gameId != null, "gameId is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
         game.cancel()
-        updateGame(game).map(_.id)
+        updateGame(game).map(_._id.toString)
       }
     }
   }
 
   def flagCell(username: String,
-               gameId: String,
+               gameId: ObjectId,
                row: Int,
                col: Int): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
-    require(gameId != null && !gameId.isBlank, "username is required")
+    require(gameId != null, "gameId is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId).flatMap { game =>
         game.flagCell(row, col)
-        updateGame(game).map(_.id)
-      }
-    }
-  }
-
-  def unCoverCell(username: String,
-                  gameId: String,
-                  row: Int,
-                  col: Int): Future[String] = {
-    require(username != null && !username.isBlank, "username is required")
-    require(gameId != null && !gameId.isBlank, "username is required")
-    findGameIdsByUsername(username).flatMap { gameIds =>
-      checkGameIds(username, gameIds, gameId)
-      findGameById(gameId).flatMap { game =>
-        game.unCoverCell(row, col)
-        updateGame(game).map(_.id)
+        updateGame(game).map(_._id.toString)
       }
     }
   }
@@ -90,16 +80,27 @@ trait GameService {
     findGameIdsByUsername(username)
   }
 
-  def gameState(username: String, gameId: String): Future[Game] = {
+  def unCoverCell(username: String,
+                  gameId: ObjectId,
+                  row: Int,
+                  col: Int): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
-    require(gameId != null && !gameId.isBlank, "username is required")
+    require(gameId != null, "gameId is required")
+    findGameIdsByUsername(username).flatMap { gameIds =>
+      checkGameIds(username, gameIds, gameId)
+      findGameById(gameId).flatMap { game =>
+        game.unCoverCell(row, col)
+        updateGame(game).map(_._id.toString)
+      }
+    }
+  }
+
+  def gameState(username: String, gameId: ObjectId): Future[Game] = {
+    require(username != null && !username.isBlank, "username is required")
+    require(gameId != null, "gameId is required")
     findGameIdsByUsername(username).flatMap { gameIds =>
       checkGameIds(username, gameIds, gameId)
       findGameById(gameId)
     }
   }
-
-  private def checkGameIds(username: String, gameIds: Seq[String], gameId: String): Unit =
-    if (!gameIds.contains(gameId))
-      throw GameDoesNotBelongToUserException(username, gameId)
 }
