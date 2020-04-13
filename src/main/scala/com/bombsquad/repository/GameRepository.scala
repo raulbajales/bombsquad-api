@@ -1,6 +1,6 @@
 package com.bombsquad.repository
 
-import com.bombsquad.model.Game
+import com.bombsquad.model.{Game, GameList}
 import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.Future
@@ -13,5 +13,5 @@ trait GameRepository {
 
   def updateGame(game: Game): Future[Game]
 
-  def findGameIdsByUsername(username: String): Future[Seq[String]]
+  def findGameIdsByUsername(username: String): Future[GameList]
 }

@@ -2,7 +2,7 @@ package com.bombsquad.service
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import com.bombsquad.model.{Game, User}
+import com.bombsquad.model.{Game, GameList, User}
 import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,7 +23,7 @@ package object GameProtocol {
 
   final case class UncoverCellCommand(username: String, gameId: String, rows: Int, cols: Int, replyTo: ActorRef[String]) extends Command
 
-  final case class ListGamesForCommand(username: String, replyTo: ActorRef[Seq[String]]) extends Command
+  final case class ListGamesForCommand(username: String, replyTo: ActorRef[GameList]) extends Command
 
   final case class GameStateCommand(username: String, gameId: String, replyTo: ActorRef[Game]) extends Command
 }

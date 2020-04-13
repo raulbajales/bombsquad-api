@@ -9,7 +9,7 @@ import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 import com.bombsquad.AppConf
 import com.bombsquad.JsonFormats._
-import com.bombsquad.model.{Game, User}
+import com.bombsquad.model.{Game, GameList, User}
 import com.bombsquad.service.GameProtocol
 import com.typesafe.scalalogging.LazyLogging
 
@@ -42,22 +42,22 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
               onSuccess(startNewGame(username, gameRequest))(complete(StatusCodes.Created, _))
             }
           }
-          //          ,
-          //          // List games for
-          //          // GET /bombsquad/users/{username}/games
-          //          get {
-          //            onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
-          //          }
+          ,
+          // List games for
+          // GET /bombsquad/users/{username}/games
+          get {
+            onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
+          }
         )
       } ~
       path("users" / Segment / "games" / Segment) { (username, gameId) =>
         concat(
           // Game state
           // GET /bombsquad/users/{username}/games/{gameId}
-          //          get {
-          //            logger.debug(s"Will get game state for user $username and game $gameId")
-          //            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
-          //          },
+          get {
+            logger.debug(s"Will get game state for user $username and game $gameId")
+            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
+          },
           // Pause game:
           // PUT /bombsquad/users/{username}/games/{gameId}/pause
           put {
@@ -112,7 +112,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
   def uncoverCell(username: String, gameId: String, row: Int, col: Int): Future[String] =
     delegate ? (GameProtocol.UncoverCellCommand(username, gameId, row, col, _))
 
-  def listGamesFor(username: String): Future[Seq[String]] =
+  def listGamesFor(username: String): Future[GameList] =
     delegate ? (GameProtocol.ListGamesForCommand(username, _))
 
   def gameState(username: String, gameId: String): Future[Game] =

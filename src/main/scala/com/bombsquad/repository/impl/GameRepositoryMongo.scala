@@ -1,6 +1,6 @@
 package com.bombsquad.repository.impl
 
-import com.bombsquad.model.{BoardFactory, Game}
+import com.bombsquad.model.{BoardFactory, Game, GameList}
 import com.bombsquad.repository.GameRepository
 import org.bson.types.ObjectId
 import org.mongodb.scala.MongoCollection
@@ -31,12 +31,10 @@ trait GameRepositoryMongo extends GameRepository with MongoSupport {
     gameColl.replaceOne(equal("_id", game._id), game, ReplaceOptions()).toFuture().map(_ => game)
   }
 
-  override def findGameIdsByUsername(username: String): Future[Seq[String]] = {
+  override def findGameIdsByUsername(username: String): Future[GameList] = {
     require(username != null && !username.isBlank, "username is required")
     gameColl.find(
       equal("username", username)
-    ).projection(
-      fields(include("_id"))
-    ).map(_._id.toString).toFuture()
+    ).map(_._id.toString).toFuture().map(gameIds => GameList(gameIds.toList))
   }
 }

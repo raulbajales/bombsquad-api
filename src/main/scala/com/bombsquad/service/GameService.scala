@@ -2,7 +2,7 @@ package com.bombsquad.service
 
 import com.bombsquad.AppConf
 import com.bombsquad.exception.GameDoesNotBelongToUserException
-import com.bombsquad.model.{Game, User}
+import com.bombsquad.model.{Game, GameList, User}
 import com.bombsquad.repository.{GameRepository, UserRepository}
 import org.mongodb.scala.bson.ObjectId
 
@@ -34,8 +34,8 @@ trait GameService {
                 gameId: ObjectId): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
     require(gameId != null, "gameId is required")
-    findGameIdsByUsername(username).flatMap { gameIds =>
-      checkGameIds(username, gameIds, gameId)
+    findGameIdsByUsername(username).flatMap { gameList =>
+      checkGameIds(username, gameList, gameId)
       findGameById(gameId).flatMap { game =>
         game.pause()
         updateGame(game).map(_._id.toString)
@@ -43,16 +43,12 @@ trait GameService {
     }
   }
 
-  private def checkGameIds(username: String, gameIds: Seq[String], gameId: ObjectId): Unit =
-    if (!gameIds.contains(gameId.toString))
-      throw GameDoesNotBelongToUserException(username, gameId.toString)
-
   def cancelGame(username: String,
                  gameId: ObjectId): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
     require(gameId != null, "gameId is required")
-    findGameIdsByUsername(username).flatMap { gameIds =>
-      checkGameIds(username, gameIds, gameId)
+    findGameIdsByUsername(username).flatMap { gameList =>
+      checkGameIds(username, gameList, gameId)
       findGameById(gameId).flatMap { game =>
         game.cancel()
         updateGame(game).map(_._id.toString)
@@ -66,8 +62,8 @@ trait GameService {
                col: Int): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
     require(gameId != null, "gameId is required")
-    findGameIdsByUsername(username).flatMap { gameIds =>
-      checkGameIds(username, gameIds, gameId)
+    findGameIdsByUsername(username).flatMap { gameList =>
+      checkGameIds(username, gameList, gameId)
       findGameById(gameId).flatMap { game =>
         game.flagCell(row, col)
         updateGame(game).map(_._id.toString)
@@ -75,7 +71,7 @@ trait GameService {
     }
   }
 
-  def listGamesFor(username: String): Future[Seq[String]] = {
+  def listGamesFor(username: String): Future[GameList] = {
     require(username != null && !username.isBlank, "username is required")
     findGameIdsByUsername(username)
   }
@@ -86,8 +82,8 @@ trait GameService {
                   col: Int): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
     require(gameId != null, "gameId is required")
-    findGameIdsByUsername(username).flatMap { gameIds =>
-      checkGameIds(username, gameIds, gameId)
+    findGameIdsByUsername(username).flatMap { gameList =>
+      checkGameIds(username, gameList, gameId)
       findGameById(gameId).flatMap { game =>
         game.unCoverCell(row, col)
         updateGame(game).map(_._id.toString)
@@ -98,9 +94,13 @@ trait GameService {
   def gameState(username: String, gameId: ObjectId): Future[Game] = {
     require(username != null && !username.isBlank, "username is required")
     require(gameId != null, "gameId is required")
-    findGameIdsByUsername(username).flatMap { gameIds =>
-      checkGameIds(username, gameIds, gameId)
+    findGameIdsByUsername(username).flatMap { gameList =>
+      checkGameIds(username, gameList, gameId)
       findGameById(gameId)
     }
   }
+
+  private def checkGameIds(username: String, gameList: GameList, gameId: ObjectId): Unit =
+    if (!gameList.gameIds.contains(gameId.toString))
+      throw GameDoesNotBelongToUserException(username, gameId.toString)
 }
