@@ -5,7 +5,6 @@ import com.bombsquad.repository.GameRepository
 import org.bson.types.ObjectId
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.model.Projections._
 import org.mongodb.scala.model.ReplaceOptions
 
 import scala.concurrent.ExecutionContext.Implicits.global

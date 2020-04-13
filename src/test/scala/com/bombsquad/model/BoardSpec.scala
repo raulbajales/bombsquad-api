@@ -34,7 +34,7 @@ class BoardSpec extends FlatSpec with Matchers {
     board.totalCells should be(25)
   }
 
-  "Board" should "be able to get a cell based on in-bounds coordinates, or fail otherwise" in {
+  "Board.cellAt" should "be able to get a cell based on in-bounds coordinates, or fail otherwise" in {
     val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
     board.cellAt(4, 4) should not be (null)
     board.cellAt(100, 100) should be(None)

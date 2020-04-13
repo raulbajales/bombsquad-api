@@ -22,7 +22,7 @@ trait GameService {
                    cols: Int = AppConf.defaultRows,
                    bombs: Int = AppConf.defaultBombs): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
-    findUserByUserame(username).flatMap { _ =>
+    findUserByUsername(username).flatMap { _ =>
       createGame(username, rows, cols, bombs).flatMap { game =>
         game.start()
         updateGame(game).map(_._id.toString)
@@ -71,11 +71,6 @@ trait GameService {
     }
   }
 
-  def listGamesFor(username: String): Future[GameList] = {
-    require(username != null && !username.isBlank, "username is required")
-    findGameIdsByUsername(username)
-  }
-
   def unCoverCell(username: String,
                   gameId: ObjectId,
                   row: Int,
@@ -98,6 +93,11 @@ trait GameService {
       checkGameIds(username, gameList, gameId)
       findGameById(gameId)
     }
+  }
+
+  def listGamesFor(username: String): Future[GameList] = {
+    require(username != null && !username.isBlank, "username is required")
+    findGameIdsByUsername(username)
   }
 
   private def checkGameIds(username: String, gameList: GameList, gameId: ObjectId): Unit =

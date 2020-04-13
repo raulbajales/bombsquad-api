@@ -21,7 +21,7 @@ class UserRepositoryMongoSpec
   "UserRepositoryMongo" should "be able to create a new user and retrieve it" in {
     val username = "testuser"
     UserRepo.createUser(User(username)).flatMap { _ =>
-      UserRepo.findUserByUserame(username)
+      UserRepo.findUserByUsername(username)
     }.map { user =>
       user should not be (null)
       user.username should be(username)

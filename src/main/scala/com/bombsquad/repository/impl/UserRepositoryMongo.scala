@@ -17,7 +17,7 @@ trait UserRepositoryMongo extends UserRepository with MongoSupport {
     userColl.insertOne(user).toFuture().map(_ => user)
   }
 
-  override def findUserByUserame(username: String): Future[User] = {
+  override def findUserByUsername(username: String): Future[User] = {
     require(username != null && !username.isBlank, "username is required")
     userColl.find(equal("username", username)).head()
   }

@@ -1,3 +1,3 @@
 package com.bombsquad.model
 
-case class GameList(gameIds: List[String])
+case class GameList(gameIds: List[String] = List())
