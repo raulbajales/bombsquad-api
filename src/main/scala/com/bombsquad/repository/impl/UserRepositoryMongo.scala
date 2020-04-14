@@ -14,9 +14,9 @@ trait UserRepositoryMongo extends UserRepository with MongoSupport {
   val userColl: MongoCollection[User] = database.getCollection("users")
 
   userColl.createIndex(
-        Indexes.ascending("username"),
-        IndexOptions().background(false).unique(true)
-  )
+    Indexes.ascending("username"),
+    IndexOptions().background(false).unique(true)
+  ).toFuture()
 
   override def createUser(user: User): Future[User] = {
     require(user != null, "user is required")

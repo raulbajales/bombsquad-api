@@ -13,6 +13,7 @@ object AppConf {
   //
 
   def routesAskTimeout: Duration = conf.getDuration("bombsquad-server.routes.ask-timeout")
+  def host: String = conf.getString("bombsquad-server.host")
 
   //
   // MongoDB configurations:
