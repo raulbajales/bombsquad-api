@@ -26,6 +26,7 @@ package object GameProtocol {
   final case class ListGamesForCommand(username: String, replyTo: ActorRef[GameList]) extends Command
 
   final case class GameStateCommand(username: String, gameId: String, replyTo: ActorRef[Game]) extends Command
+
 }
 
 trait GameActor {
@@ -55,5 +56,6 @@ trait GameActor {
       Behaviors.same
     case GameProtocol.GameStateCommand(username, gameId, replyTo) =>
       gameState(username, new ObjectId(gameId)).map(replyTo ! _)
-      Behaviors.same  }
+      Behaviors.same
+  }
 }

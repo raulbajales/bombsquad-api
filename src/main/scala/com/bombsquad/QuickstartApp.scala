@@ -19,20 +19,21 @@ object DefaultGameActor
 
 object QuickstartApp {
   def main(args: Array[String]): Unit = {
+    val port: Int = sys.env.getOrElse("PORT", "8080").toInt
     val rootBehavior = Behaviors.setup[Nothing] { context =>
       val gameActor = context.spawn(DefaultGameActor.behavior, "GameActor")
       context.watch(gameActor)
       val controller = new GameController(gameActor)(context.system)
-      startHttpServer(controller.routes, context.system)
+      startHttpServer(controller.routes, context.system, port)
       Behaviors.empty
     }
     ActorSystem[Nothing](rootBehavior, "BombsquadServer")
   }
 
-  private def startHttpServer(routes: Route, system: ActorSystem[_]): Unit = {
+  private def startHttpServer(routes: Route, system: ActorSystem[_], port: Int): Unit = {
     implicit val classicSystem: akka.actor.ActorSystem = system.toClassic
     import system.executionContext
-    val futureBinding = Http().bindAndHandle(routes, "localhost", 8080)
+    val futureBinding = Http().bindAndHandle(routes, "0.0.0.0", port)
     futureBinding.onComplete {
       case Success(binding) =>
         system.log.info(s"Server online at http://${binding.localAddress.getHostString}:${binding.localAddress.getPort}/")
