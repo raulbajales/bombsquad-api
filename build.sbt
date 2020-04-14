@@ -7,6 +7,9 @@ maintainer := "raul.bajales@gmail.com"
 
 mainClass in Compile := Some("com.bombsquad.QuickstartApp")
 
+herokuJdkVersion in Compile := "11"
+herokuAppName in Compile := "bombsquad-api"
+
 lazy val akkaHttpVersion = "10.1.11"
 lazy val akkaVersion = "2.6.4"
 
