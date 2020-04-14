@@ -2,7 +2,7 @@ package com.bombsquad.repository.impl
 
 import com.bombsquad.model.{BoardFactory, Game, GameList}
 import com.bombsquad.repository.GameRepository
-import org.bson.types.ObjectId
+import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.ReplaceOptions

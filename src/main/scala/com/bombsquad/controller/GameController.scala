@@ -25,94 +25,97 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
     ExceptionHandler {
       case e: GameDoesNotBelongToUserException =>
         extractUri { uri =>
-          logger.warn(s"Exception in request to $uri: ${e.getMessage}")
+          logger.info(s"Exception in request to $uri: ${e.getMessage}")
           complete(HttpResponse(Forbidden))
         }
       case e: IllegalArgumentException => {
         extractUri { uri =>
-          logger.warn(s"Exception in request to $uri: ${e.getMessage}")
+          logger.info(s"Exception in request to $uri: ${e.getMessage}")
           complete(HttpResponse(BadRequest))
         }
       }
       case e: Throwable => {
         extractUri { uri =>
-          logger.warn(s"Exception in request to $uri: ${e.getMessage}")
+          logger.info(s"Exception in request to $uri: ${e.getMessage}")
           complete(HttpResponse(InternalServerError))
         }
       }
     }
 
   val routes: Route = pathPrefix("bombsquad") {
-    path("users") {
-      //  Signup user:
-      //  POST /bombsquad/users
-      post {
-        entity(as[User]) { user =>
-          logger.debug(s"Will create user $user")
-          onSuccess(signupUser(user))(complete(StatusCodes.Created, _))
+    concat(
+      path("users") {
+        //  Signup user:
+        //  POST /bombsquad/users
+        post {
+          entity(as[User]) { user =>
+            logger.info(s"Will create user $user")
+            onSuccess(signupUser(user))(complete(StatusCodes.Created, _))
+          }
         }
-      }
-    } ~
-      path("users" / Segment) { username =>
+      },
+      path("users" / Segment / "games") { username =>
         concat(
           // Start new game:
           // POST /bombsquad/users/{username}/games
           post {
             entity(as[GameRequest]) { gameRequest =>
-              logger.debug(s"Will create game $gameRequest")
+              logger.info(s"Will create game $gameRequest")
               onSuccess(startNewGame(username, gameRequest))(complete(StatusCodes.Created, _))
             }
-          }
-          ,
+          },
           // List games for
           // GET /bombsquad/users/{username}/games
           get {
             onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
           }
         )
-      } ~
+      },
       path("users" / Segment / "games" / Segment) { (username, gameId) =>
-        concat(
-          // Game state
-          // GET /bombsquad/users/{username}/games/{gameId}
-          get {
-            logger.debug(s"Will get game state for user $username and game $gameId")
-            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
-          },
-          // Pause game:
-          // PUT /bombsquad/users/{username}/games/{gameId}/pause
-          put {
-            logger.debug(s"Will pause game $gameId for user $username")
-            onSuccess(pauseGame(username, gameId))(complete(StatusCodes.OK, _))
-          },
-          // Cancel game
-          // PUT /bombsquad/users/{username}/games/{gameId}/cancel
-          put {
-            logger.debug(s"Will cancel game $gameId for user $username")
-            onSuccess(cancelGame(username, gameId))(complete(StatusCodes.OK, _))
-          }
-        )
-      } ~
-      // Flag cell
-      // PUT /bombsquad/users/{username}/games/{gameId}/flag?row={row}&col={col}
+        // Game state
+        // GET /bombsquad/users/{username}/games/{gameId}
+        get {
+          logger.info(s"Will get game state for user $username and game $gameId")
+          onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
+        }
+      },
+      path("users" / Segment / "games" / Segment / "pause") { (username, gameId) =>
+        // Pause game:
+        // PUT /bombsquad/users/{username}/games/{gameId}/pause
+        put {
+          logger.info(s"Will pause game $gameId for user $username")
+          onSuccess(pauseGame(username, gameId))(complete(StatusCodes.OK, _))
+        }
+      },
+      path("users" / Segment / "games" / Segment / "cancel") { (username, gameId) =>
+        // Cancel game
+        // PUT /bombsquad/users/{username}/games/{gameId}/cancel
+        put {
+          logger.info(s"Will cancel game $gameId for user $username")
+          onSuccess(cancelGame(username, gameId))(complete(StatusCodes.OK, _))
+        }
+      },
       path("users" / Segment / "games" / Segment / "flag") { (username, gameId) =>
+        // Flag cell
+        // PUT /bombsquad/users/{username}/games/{gameId}/flag?row={row}&col={col}
         parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
           put {
-            logger.debug(s"Will flag/unflag cell row $row, col $col, for game $gameId and user $username")
+            logger.info(s"Will flag/unflag cell row $row, col $col, for game $gameId and user $username")
             onSuccess(flagCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
           }
         }
-      } ~
-      // Uncover cell
-      // PUT /bombsquad/users/{username}/games/{gameId}/uncover?row={row}&col={col}
+      },
       path("users" / Segment / "games" / Segment / "uncover") { (username, gameId) =>
+        // Uncover cell
+        // PUT /bombsquad/users/{username}/games/{gameId}/uncover?row={row}&col={col}
         parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
           put {
-            logger.debug(s"Will uncover cell row $row, col $col, for game $gameId and user $username")
+            logger.info(s"Will uncover cell row $row, col $col, for game $gameId and user $username")
             onSuccess(uncoverCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
           }
         }
       }
+    )
   }
 
   def signupUser(user: User): Future[User] =

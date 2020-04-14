@@ -1,6 +1,5 @@
 package com.bombsquad
 
-import com.bombsquad.controller.GameRequest
 import com.bombsquad.model._
 import org.mongodb.scala.bson.ObjectId
 import spray.json.{DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat}
@@ -24,15 +23,10 @@ object JsonFormats {
     }
   }
 
-  implicit object ObjectIdSerializer extends RootJsonFormat[ObjectId] {
-    override def write(obj: ObjectId): JsValue = {
-      JsString(obj.toHexString)
-    }
+  implicit object ObjectIdFormat extends RootJsonFormat[ObjectId] {
+    override def write(obj: ObjectId): JsValue = JsString(obj.toString)
 
-    override def read(json: JsValue): ObjectId = {
-      val ob = new ObjectId(json.toString())
-      ob
-    }
+    override def read(json: JsValue): ObjectId = new ObjectId(json.toString())
   }
 
   import DefaultJsonProtocol._

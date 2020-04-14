@@ -1,65 +1,14 @@
 package com.bombsquad.service
 
 import com.bombsquad.model._
-import com.bombsquad.repository.{GameRepository, UserRepository}
+import com.bombsquad.repository.RepositoryStubs
 import org.mongodb.scala.bson.ObjectId
 import org.scalatest.{AsyncFlatSpec, BeforeAndAfter, Matchers}
 
-import scala.collection.mutable
-import scala.concurrent.Future
-
-class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
-
-  var ctxt: Context = null
+class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter with RepositoryStubs {
 
   before {
-    ctxt = new Context()
-  }
-
-  class Context {
-    var calls = mutable.Queue[(String, Any)]()
-    var gameIdObj = new ObjectId()
-    var username = "john.doe"
-    var user = User(username)
-    var game = Game(_id = gameIdObj, username = username, board = BoardFactory.createWithSpecificBuriedBombs(5, 5, Set((4, 4))))
-    var gameList = GameList(List(gameIdObj.toString))
-  }
-
-  trait UserRepositoryStub extends UserRepository {
-    def createUser(user: User): Future[User] = {
-      ctxt.calls.enqueue(("createUser", user))
-      Future(user)
-    }
-
-    def findUserByUsername(username: String): Future[User] = {
-      val retValue = ctxt.user
-      ctxt.calls.enqueue(("findUserByUsername", retValue))
-      Future(retValue)
-    }
-  }
-
-  trait GameRepositoryStub extends GameRepository {
-    def createGame(username: String, rows: Int, cols: Int, bombs: Int): Future[Game] = {
-      val retValue = ctxt.game
-      ctxt.calls.enqueue(("createGame", retValue))
-      Future(retValue)
-    }
-
-    def findGameById(gameId: ObjectId): Future[Game] = {
-      ctxt.calls.enqueue(("findGameById", ctxt.game))
-      Future(ctxt.game)
-    }
-
-    def updateGame(game: Game): Future[Game] = {
-      ctxt.calls.enqueue(("updateGame", game))
-      Future(game)
-    }
-
-    def findGameIdsByUsername(username: String): Future[GameList] = {
-      val retValue = ctxt.gameList
-      ctxt.calls.enqueue(("findGameIdsByUsername", retValue))
-      Future(retValue)
-    }
+    ctxt = new StubsContext()
   }
 
   object TestGameService extends GameService with UserRepositoryStub with GameRepositoryStub
@@ -93,7 +42,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
         ctxt.calls.dequeue() should be(("findGameById", ctxt.game))
         ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
 
-        ctxt.game.workflow.currentState should be (Paused.name)
+        ctxt.game.workflow.currentState should be(Paused.name)
         gameId should be(ctxt.gameIdObj.toString)
       }
     }
@@ -110,7 +59,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
         ctxt.calls.dequeue() should be(("findGameById", ctxt.game))
         ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
 
-        ctxt.game.workflow.currentState should be (Cancelled.name)
+        ctxt.game.workflow.currentState should be(Cancelled.name)
         gameId should be(ctxt.gameIdObj.toString)
       }
     }
@@ -127,9 +76,9 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
         ctxt.calls.dequeue() should be(("findGameById", ctxt.game))
         ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
 
-        ctxt.game.workflow.currentState should be (Running.name)
+        ctxt.game.workflow.currentState should be(Running.name)
         ctxt.game.board.cellAt(3, 3) match {
-          case Some(cell) => cell.flagged should be (true)
+          case Some(cell) => cell.flagged should be(true)
         }
         gameId should be(ctxt.gameIdObj.toString)
       }
@@ -147,9 +96,9 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
         ctxt.calls.dequeue() should be(("findGameById", ctxt.game))
         ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
 
-        ctxt.game.workflow.currentState should be (Running.name)
+        ctxt.game.workflow.currentState should be(Running.name)
         ctxt.game.board.cellAt(3, 3) match {
-          case Some(cell) => cell.covered should be (false)
+          case Some(cell) => cell.covered should be(false)
         }
         gameId should be(ctxt.gameIdObj.toString)
       }
@@ -167,9 +116,9 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
         ctxt.calls.dequeue() should be(("findGameById", ctxt.game))
         ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
 
-        ctxt.game.workflow.currentState should be (Running.name)
+        ctxt.game.workflow.currentState should be(Running.name)
         ctxt.game.board.cellAt(3, 3) match {
-          case Some(cell) => cell.covered should be (false)
+          case Some(cell) => cell.covered should be(false)
         }
         gameId should be(ctxt.gameIdObj.toString)
 
@@ -177,9 +126,9 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
           ctxt.calls.dequeue() should be(("findGameIdsByUsername", ctxt.gameList))
           ctxt.calls.dequeue() should be(("findGameById", ctxt.game))
 
-          game.workflow.currentState should be (Running.name)
+          game.workflow.currentState should be(Running.name)
           game.board.cellAt(3, 3) match {
-            case Some(cell) => cell.covered should be (false)
+            case Some(cell) => cell.covered should be(false)
           }
         }
       }
@@ -188,8 +137,8 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter {
 
   "GameService" should "be able to get list og game ids for a user" in {
     TestGameService.listGamesFor(ctxt.username).flatMap { gameList =>
-      ctxt.calls.dequeue() should be (("findGameIdsByUsername", ctxt.gameList))
-      gameList should be (ctxt.gameList)
+      ctxt.calls.dequeue() should be(("findGameIdsByUsername", ctxt.gameList))
+      gameList should be(ctxt.gameList)
     }
   }
 }

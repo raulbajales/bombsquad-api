@@ -22,8 +22,8 @@ class GameRepositoryMongoSpec
     val username = "testuser"
     val rows = 9
     val cols = 8
-    GameRepo.createGame(username, rows, cols, 15).flatMap { game =>
-      GameRepo.findGameById(game._id)
+    GameRepo.createGame(username, rows, cols, 15).flatMap { createdGame =>
+      GameRepo.findGameById(createdGame._id)
     }.map { game =>
       game should not be (null)
       game.username should be(username)
