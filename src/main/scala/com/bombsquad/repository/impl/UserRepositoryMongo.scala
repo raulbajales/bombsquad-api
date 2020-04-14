@@ -4,13 +4,19 @@ import com.bombsquad.model.User
 import com.bombsquad.repository.UserRepository
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.{IndexOptions, Indexes}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait UserRepositoryMongo extends UserRepository with MongoSupport {
 
-  lazy val userColl: MongoCollection[User] = database.getCollection("users")
+  val userColl: MongoCollection[User] = database.getCollection("users")
+
+  userColl.createIndex(
+        Indexes.ascending("username"),
+        IndexOptions().background(false).unique(true)
+  )
 
   override def createUser(user: User): Future[User] = {
     require(user != null, "user is required")
