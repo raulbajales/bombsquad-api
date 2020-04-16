@@ -14,7 +14,6 @@ import com.bombsquad.service.GameProtocol
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success, Try}
 
 class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val system: ActorSystem[_]) extends LazyLogging {
 
@@ -29,10 +28,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           post {
             entity(as[User]) { user =>
               logger.info(s"Will create user $user")
-              onSuccess(signupUser(user)) {
-                case Success(user) => complete(StatusCodes.Created, user)
-                case Failure(e) => throw e
-              }
+              onSuccess(signupUser(user))(user => complete(StatusCodes.Created, user))
             }
           }
         },
@@ -43,19 +39,13 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
             post {
               entity(as[GameRequest]) { gameRequest =>
                 logger.info(s"Will create game $gameRequest")
-                onSuccess(startNewGame(username, gameRequest)) {
-                  case Success(gameId) => complete(StatusCodes.Created, gameId)
-                  case Failure(e) => throw e
-                }
+                onSuccess(startNewGame(username, gameRequest))(complete(StatusCodes.Created, _))
               }
             },
             // List games for
             // GET /bombsquad/users/{username}/games
             get {
-              onSuccess(listGamesFor(username)) {
-                case Success(gameList) => complete(StatusCodes.OK, gameList)
-                case Failure(e) => throw e
-              }
+              onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
             }
           )
         },
@@ -64,10 +54,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           // GET /bombsquad/users/{username}/games/{gameId}
           get {
             logger.info(s"Will get game state for user $username and game $gameId")
-            onSuccess(gameState(username, gameId)) {
-              case Success(game) => complete(StatusCodes.OK, game)
-              case Failure(e) => throw e
-            }
+            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
           }
         },
         path("users" / Segment / "games" / Segment / "pause") { (username, gameId) =>
@@ -75,10 +62,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           // PUT /bombsquad/users/{username}/games/{gameId}/pause
           put {
             logger.info(s"Will pause game $gameId for user $username")
-            onSuccess(pauseGame(username, gameId)) {
-              case Success(gameId) => complete(StatusCodes.OK, gameId)
-              case Failure(e) => throw e
-            }
+            onSuccess(pauseGame(username, gameId))(complete(StatusCodes.OK, _))
           }
         },
         path("users" / Segment / "games" / Segment / "cancel") { (username, gameId) =>
@@ -86,10 +70,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           // PUT /bombsquad/users/{username}/games/{gameId}/cancel
           put {
             logger.info(s"Will cancel game $gameId for user $username")
-            onSuccess(cancelGame(username, gameId)) {
-              case Success(gameId) => complete(StatusCodes.OK, gameId)
-              case Failure(e) => throw e
-            }
+            onSuccess(cancelGame(username, gameId))(complete(StatusCodes.OK, _))
           }
         },
         path("users" / Segment / "games" / Segment / "flag") { (username, gameId) =>
@@ -98,10 +79,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
             put {
               logger.info(s"Will flag/unflag cell row $row, col $col, for game $gameId and user $username")
-              onSuccess(flagCell(username, gameId, row, col)) {
-                case Success(gameId) => complete(StatusCodes.OK, gameId)
-                case Failure(e) => throw e
-              }
+              onSuccess(flagCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
             }
           }
         },
@@ -111,10 +89,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
           parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
             put {
               logger.info(s"Will uncover cell row $row, col $col, for game $gameId and user $username")
-              onSuccess(uncoverCell(username, gameId, row, col)) {
-                case Success(gameId) => complete(StatusCodes.OK, gameId)
-                case Failure(e) => throw e
-              }
+              onSuccess(uncoverCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
             }
           }
         }
@@ -122,27 +97,28 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
     }
   }
 
-  def signupUser(user: User): Future[Try[User]] =
+  def signupUser(user: User): Future[Future[User]] = {
     delegate ? (GameProtocol.SignupUserCommand(user, _))
+  }
 
-  def startNewGame(username: String, gameReq: GameRequest): Future[Try[String]] =
+  def startNewGame(username: String, gameReq: GameRequest): Future[Future[String]] =
     delegate ? (GameProtocol.StartNewGameCommand(username, gameReq.rows, gameReq.cols, gameReq.bombs, _))
 
-  def pauseGame(username: String, gameId: String): Future[Try[String]] =
+  def pauseGame(username: String, gameId: String): Future[Future[String]] =
     delegate ? (GameProtocol.PauseGameCommand(username, gameId, _))
 
-  def cancelGame(username: String, gameId: String): Future[Try[String]] =
+  def cancelGame(username: String, gameId: String): Future[Future[String]] =
     delegate ? (GameProtocol.CancelGameCommand(username, gameId, _))
 
-  def flagCell(username: String, gameId: String, row: Int, col: Int): Future[Try[String]] =
+  def flagCell(username: String, gameId: String, row: Int, col: Int): Future[Future[String]] =
     delegate ? (GameProtocol.FlagCellCommand(username, gameId, row, col, _))
 
-  def uncoverCell(username: String, gameId: String, row: Int, col: Int): Future[Try[String]] =
+  def uncoverCell(username: String, gameId: String, row: Int, col: Int): Future[Future[String]] =
     delegate ? (GameProtocol.UncoverCellCommand(username, gameId, row, col, _))
 
-  def listGamesFor(username: String): Future[Try[GameList]] =
+  def listGamesFor(username: String): Future[Future[GameList]] =
     delegate ? (GameProtocol.ListGamesForCommand(username, _))
 
-  def gameState(username: String, gameId: String): Future[Try[Game]] =
+  def gameState(username: String, gameId: String): Future[Future[Game]] =
     delegate ? (GameProtocol.GameStateCommand(username, gameId, _))
 }
