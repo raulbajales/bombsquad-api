@@ -32,7 +32,7 @@ object JsonFormats {
   import DefaultJsonProtocol._
 
   implicit val gameRequestJsonFormat: RootJsonFormat[GameRequest] = jsonFormat3(GameRequest)
-  implicit val stopWatchJsonFormat: RootJsonFormat[StopWatch] = jsonFormat1(StopWatch)
+  implicit val stopWatchJsonFormat: RootJsonFormat[StopWatch] = jsonFormat2(StopWatch)
   implicit val cellJsonFormat: RootJsonFormat[Cell] = jsonFormat4(Cell)
   implicit val gameWorkflowJsonFormat: RootJsonFormat[GameWorkflow] = jsonFormat2(GameWorkflow)
   implicit val boardJsonFormat: RootJsonFormat[Board] = jsonFormat1(Board)
