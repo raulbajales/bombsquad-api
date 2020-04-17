@@ -59,13 +59,14 @@ class GameRepositoryMongoSpec
   "GameRepositoryMongo" should "be able to get the list of game ids for a given username" in {
     val username1 = "testuser1"
     val username2 = "testuser2"
-    (for {
+    for {
       _ <- GameRepo.createGame(username1, 5, 5, 5)
-      _ <- GameRepo.createGame(username2, 6, 6, 5)
+      gameForUser2 <- GameRepo.createGame(username2, 6, 6, 5)
       gameList <- GameRepo.findGameIdsByUsername(username2)
-    } yield gameList).map { gameList =>
+    } yield {
       gameList should not be (null)
       gameList.gameIds.size should be(1)
+      gameList.gameIds.contains(gameForUser2._id.toString) should be(true)
     }
   }
 }
