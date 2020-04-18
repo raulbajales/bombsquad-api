@@ -2,7 +2,7 @@ package com.bombsquad.service
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import com.bombsquad.model.{Game, GameList, User}
+import com.bombsquad.model.{Game, GameList, GameRequest, User}
 import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.Future
@@ -13,7 +13,7 @@ package object GameProtocol {
 
   final case class SignupUserCommand(user: User, replyTo: ActorRef[Future[User]]) extends Command
 
-  final case class StartNewGameCommand(username: String, rows: Int, cols: Int, bombs: Int, replyTo: ActorRef[Future[String]]) extends Command
+  final case class StartNewGameCommand(username: String, gameRequest: GameRequest, replyTo: ActorRef[Future[String]]) extends Command
 
   final case class PauseGameCommand(username: String, gameId: String, replyTo: ActorRef[Future[String]]) extends Command
 
@@ -36,8 +36,8 @@ trait GameActor {
     case GameProtocol.SignupUserCommand(user, replyTo) =>
       replyTo ! signupUser(user)
       Behaviors.same
-    case GameProtocol.StartNewGameCommand(username, rows, cols, bombs, replyTo) =>
-      replyTo ! startNewGame(username, rows, cols, bombs)
+    case GameProtocol.StartNewGameCommand(username, gameRequest, replyTo) =>
+      replyTo ! startNewGame(username, gameRequest)
       Behaviors.same
     case GameProtocol.PauseGameCommand(username, gameId, replyTo) =>
       replyTo ! pauseGame(username, new ObjectId(gameId))

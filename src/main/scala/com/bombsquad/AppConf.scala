@@ -6,31 +6,33 @@ import com.typesafe.config.{Config, ConfigFactory}
 
 object AppConf {
 
-  private lazy val conf: Config = ConfigFactory.load()
+  var configLoader: Config = ConfigFactory.load()
+
+  private lazy val configObject: Config = configLoader
 
   //
   // Server configurations:
   //
 
-  def routesAskTimeout: Duration = conf.getDuration("bombsquad-server.routes.ask-timeout")
-  def host: String = conf.getString("bombsquad-server.host")
+  def controllerRoutesAskTimeout: Duration = configObject.getDuration("bombsquad-server.routes.ask-timeout")
+
+  def serverHost: String = configObject.getString("bombsquad-server.host")
 
   //
   // MongoDB configurations:
   //
 
-  def mongoDatabase: String = conf.getString("mongodb.database")
+  def mongoDatabase: String = configObject.getString("mongodb.database")
 
-  def mongoURI: String = conf.getString("mongodb.uri")
+  def mongoURI: String = configObject.getString("mongodb.uri")
 
   //
   // Game specific configurations:
   //
 
-  def defaultRows: Int = conf.getInt("bombsquad.default-rows")
+  def gameDefaultRows: Int = configObject.getInt("bombsquad.default-rows")
 
-  def defaultCols: Int = conf.getInt("bombsquad.default-cols")
+  def gameDefaultCols: Int = configObject.getInt("bombsquad.default-cols")
 
-  def defaultBombs: Int = conf.getInt("bombsquad.default-bombs")
-
+  def gameDefaultBombs: Int = configObject.getInt("bombsquad.default-bombs")
 }

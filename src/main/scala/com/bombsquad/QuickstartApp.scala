@@ -33,7 +33,7 @@ object QuickstartApp {
   private def startHttpServer(routes: Route, system: ActorSystem[_], port: Int): Unit = {
     implicit val classicSystem: akka.actor.ActorSystem = system.toClassic
     import system.executionContext
-    val futureBinding = Http().bindAndHandle(routes, AppConf.host, port)
+    val futureBinding = Http().bindAndHandle(routes, AppConf.serverHost, port)
     futureBinding.onComplete {
       case Success(binding) =>
         system.log.info(s"Server online at http://${binding.localAddress.getHostString}:${binding.localAddress.getPort}/")

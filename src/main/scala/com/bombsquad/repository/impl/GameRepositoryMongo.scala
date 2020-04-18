@@ -1,6 +1,6 @@
 package com.bombsquad.repository.impl
 
-import com.bombsquad.model.{BoardFactory, Game, GameList}
+import com.bombsquad.model.{BoardFactory, Game, GameList, GameRequest}
 import com.bombsquad.repository.GameRepository
 import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.MongoCollection
@@ -14,9 +14,9 @@ trait GameRepositoryMongo extends GameRepository with MongoSupport {
 
   lazy val gameColl: MongoCollection[Game] = database.getCollection("games")
 
-  override def createGame(username: String, rows: Int, cols: Int, bombs: Int): Future[Game] = {
+  override def createGame(username: String, gameRequest: GameRequest): Future[Game] = {
     require(username != null && !username.isBlank, "username is required")
-    val game = Game(username = username, board = BoardFactory.createWithRandomlyBuriedBombs(rows, cols, bombs))
+    val game = Game(username = username, board = BoardFactory.createWithRandomlyBuriedBombs(gameRequest))
     gameColl.insertOne(game).toFuture().map(_ => game)
   }
 

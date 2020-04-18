@@ -17,7 +17,7 @@ import scala.concurrent.Future
 
 class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val system: ActorSystem[_]) extends LazyLogging {
 
-  private implicit val timeout: Timeout = Timeout.create(AppConf.routesAskTimeout)
+  private implicit val timeout: Timeout = Timeout.create(AppConf.controllerRoutesAskTimeout)
 
   val routes: Route = handleExceptions(CustomExceptionHandler.handler) {
     pathPrefix("bombsquad") {
@@ -102,7 +102,7 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
   }
 
   def startNewGame(username: String, gameReq: GameRequest): Future[Future[String]] =
-    delegate ? (GameProtocol.StartNewGameCommand(username, gameReq.rows, gameReq.cols, gameReq.bombs, _))
+    delegate ? (GameProtocol.StartNewGameCommand(username, gameReq, _))
 
   def pauseGame(username: String, gameId: String): Future[Future[String]] =
     delegate ? (GameProtocol.PauseGameCommand(username, gameId, _))

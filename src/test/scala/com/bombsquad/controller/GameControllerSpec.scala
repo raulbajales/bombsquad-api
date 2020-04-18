@@ -6,17 +6,15 @@ import akka.actor.typed.scaladsl.adapter._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.{ContentTypes, MessageEntity, StatusCodes}
-import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
+import akka.http.scaladsl.testkit.RouteTestTimeout
+import com.bombsquad.BaseControllerTest
 import com.bombsquad.JsonFormats._
-import com.bombsquad.model.{Cancelled, Game, GameList, GameRequest, Paused, User}
-import com.bombsquad.repository.RepositoryStubs
+import com.bombsquad.model._
 import com.bombsquad.service.{GameActor, GameService}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfter, Matchers, WordSpec}
 
 import scala.concurrent.duration._
 
-class GameControllerSpec extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest with BeforeAndAfter with RepositoryStubs {
+class GameControllerSpec extends BaseControllerTest {
 
   before {
     ctxt = new StubsContext()

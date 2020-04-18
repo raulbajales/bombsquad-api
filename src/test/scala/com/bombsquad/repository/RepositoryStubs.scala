@@ -1,6 +1,6 @@
 package com.bombsquad.repository
 
-import com.bombsquad.model.{BoardFactory, Game, GameList, User}
+import com.bombsquad.model.{BoardFactory, Game, GameList, GameRequest, User}
 import org.mongodb.scala.bson.ObjectId
 
 import scala.collection.mutable
@@ -34,7 +34,7 @@ trait RepositoryStubs {
   }
 
   trait GameRepositoryStub extends GameRepository {
-    def createGame(username: String, rows: Int, cols: Int, bombs: Int): Future[Game] = {
+    def createGame(username: String, gameRequest: GameRequest): Future[Game] = {
       val retValue = ctxt.game
       ctxt.calls.enqueue(("createGame", retValue))
       Future(retValue)

@@ -1,16 +1,13 @@
 package com.bombsquad.repository
 
-import com.bombsquad.model.{NotStarted, Won}
+import com.bombsquad.BaseUnitTest
+import com.bombsquad.model.{GameRequest, NotStarted, Won}
 import com.bombsquad.repository.impl.GameRepositoryMongo
-import org.scalatest.{AsyncFlatSpec, BeforeAndAfter, Matchers}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class GameRepositoryMongoSpec
-  extends AsyncFlatSpec
-    with Matchers
-    with BeforeAndAfter {
+class GameRepositoryMongoSpec extends BaseUnitTest {
 
   before {
     Await.result(GameRepo.gameColl.drop().toFuture(), 3 seconds)
@@ -22,7 +19,7 @@ class GameRepositoryMongoSpec
     val username = "testuser"
     val rows = 9
     val cols = 8
-    GameRepo.createGame(username, rows, cols, 15).flatMap { createdGame =>
+    GameRepo.createGame(username, GameRequest(rows, cols, 15)).flatMap { createdGame =>
       GameRepo.findGameById(createdGame._id)
     }.map { game =>
       game should not be (null)
@@ -38,7 +35,7 @@ class GameRepositoryMongoSpec
     val username = "testuser"
     val rows = 9
     val cols = 8
-    GameRepo.createGame(username, rows, cols, 0).flatMap { game =>
+    GameRepo.createGame(username, GameRequest(rows, cols, 0)).flatMap { game =>
       GameRepo.findGameById(game._id).flatMap { retrievedGame =>
         retrievedGame.start()
         Thread.sleep(1500)
@@ -60,8 +57,8 @@ class GameRepositoryMongoSpec
     val username1 = "testuser1"
     val username2 = "testuser2"
     for {
-      _ <- GameRepo.createGame(username1, 5, 5, 5)
-      gameForUser2 <- GameRepo.createGame(username2, 6, 6, 5)
+      _ <- GameRepo.createGame(username1, GameRequest(5, 5, 5))
+      gameForUser2 <- GameRepo.createGame(username2, GameRequest(6, 6, 5))
       gameList <- GameRepo.findGameIdsByUsername(username2)
     } yield {
       gameList should not be (null)

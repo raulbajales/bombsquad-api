@@ -1,16 +1,13 @@
 package com.bombsquad.repository
 
+import com.bombsquad.BaseUnitTest
 import com.bombsquad.model.User
 import com.bombsquad.repository.impl.UserRepositoryMongo
-import org.scalatest.{AsyncFlatSpec, BeforeAndAfter, Matchers}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class UserRepositoryMongoSpec
-  extends AsyncFlatSpec
-    with Matchers
-    with BeforeAndAfter {
+class UserRepositoryMongoSpec extends BaseUnitTest {
 
   object UserRepo extends UserRepositoryMongo
 

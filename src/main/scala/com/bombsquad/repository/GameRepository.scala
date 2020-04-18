@@ -1,13 +1,13 @@
 package com.bombsquad.repository
 
-import com.bombsquad.model.{Game, GameList}
+import com.bombsquad.model.{Game, GameList, GameRequest}
 import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.Future
 
 trait GameRepository {
 
-  def createGame(username: String, rows: Int, cols: Int, bombs: Int): Future[Game]
+  def createGame(username: String, gameRequest: GameRequest): Future[Game]
 
   def findGameById(gameId: ObjectId): Future[Game]
 

@@ -75,19 +75,19 @@ case class Board(var matrix: List[List[Cell]]) {
 
 object BoardFactory {
 
-  def createWithRandomlyBuriedBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols, bombs: Int = AppConf.defaultBombs): Board = {
-    require(bombs < (rows * cols), "Too much bombs")
-    val board = fill(newEmptyBoard(rows, cols))((_, _) => Cell())
-    spreadBombs(board, bombs)
+  def createWithRandomlyBuriedBombs(gameRequest: GameRequest = GameRequest()): Board = {
+    require(gameRequest.bombs < (gameRequest.rows * gameRequest.cols), "Too much bombs")
+    val board = fill(newEmptyBoard(gameRequest.rows, gameRequest.cols))((_, _) => Cell())
+    spreadBombs(board, gameRequest.bombs)
     board
   }
 
-  def createWithSpecificBuriedBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols, bombs: Set[(Int, Int)]): Board = {
+  def createWithSpecificBuriedBombs(rows: Int = AppConf.gameDefaultRows, cols: Int = AppConf.gameDefaultCols, bombs: Set[(Int, Int)]): Board = {
     require(bombs.size < (rows * cols), "Too much bombs")
     fill(newEmptyBoard(rows, cols))((row, col) => Cell(hasBomb = bombs.contains((row, col))))
   }
 
-  def createWithoutBombs(rows: Int = AppConf.defaultRows, cols: Int = AppConf.defaultCols): Board =
+  def createWithoutBombs(rows: Int = AppConf.gameDefaultRows, cols: Int = AppConf.gameDefaultCols): Board =
     fill(newEmptyBoard(rows, cols))((_, _) => Cell())
 
   private def spreadBombs(board: Board, bombs: Int): Unit = {

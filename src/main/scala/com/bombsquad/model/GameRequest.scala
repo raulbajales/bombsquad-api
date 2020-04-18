@@ -1,3 +1,5 @@
 package com.bombsquad.model
 
-case class GameRequest(rows: Int, cols: Int, bombs: Int)
+import com.bombsquad.AppConf
+
+case class GameRequest(rows: Int = AppConf.gameDefaultRows, cols: Int = AppConf.gameDefaultCols, bombs: Int = AppConf.gameDefaultBombs)

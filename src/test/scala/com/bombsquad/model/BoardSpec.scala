@@ -11,7 +11,7 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   "Board creation" should "have spread randomly all the configured bombs" in {
-    BoardFactory.createWithRandomlyBuriedBombs(bombs = 30).matrix.map(_.count(_.hasBomb)).sum should be(30)
+    BoardFactory.createWithRandomlyBuriedBombs(GameRequest(bombs = 30)).matrix.map(_.count(_.hasBomb)).sum should be(30)
   }
 
   "Board creation" should "have spread specifically all the configured bombs" in {
@@ -23,19 +23,19 @@ class BoardSpec extends FlatSpec with Matchers {
 
   "Board creation" should "fail if too much bombs" in {
     a[IllegalArgumentException] should be thrownBy {
-      BoardFactory.createWithRandomlyBuriedBombs(3, 3, 50)
+      BoardFactory.createWithRandomlyBuriedBombs(GameRequest(3, 3, 50))
     }
   }
 
   "Board creation" should "correctly calculate rows, cols and totalCells" in {
-    val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
+    val board = BoardFactory.createWithRandomlyBuriedBombs(GameRequest(5, 5))
     board.rows should be(5)
     board.cols should be(5)
     board.totalCells should be(25)
   }
 
   "Board.cellAt" should "be able to get a cell based on in-bounds coordinates, or fail otherwise" in {
-    val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
+    val board = BoardFactory.createWithRandomlyBuriedBombs(GameRequest(5, 5))
     board.cellAt(4, 4) should not be (null)
     board.cellAt(100, 100) should be(None)
   }
@@ -92,7 +92,7 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   "Board" should "know when coordinates are in bounds" in {
-    val board = BoardFactory.createWithRandomlyBuriedBombs(5, 9)
+    val board = BoardFactory.createWithRandomlyBuriedBombs(GameRequest(5, 9))
     board.inBounds(0, 0) should be(true)
     board.inBounds(-1, -1) should be(false)
     board.inBounds(5, 5) should be(false)
@@ -110,7 +110,7 @@ class BoardSpec extends FlatSpec with Matchers {
   }
 
   "Board" should "fail trying to flag an uncovered cell" in {
-    val board = BoardFactory.createWithRandomlyBuriedBombs(5, 5)
+    val board = BoardFactory.createWithRandomlyBuriedBombs(GameRequest(5, 5))
     board.replaceCell(0, 0, Cell(covered = false))
     a[IllegalStateException] should be thrownBy {
       board.flag(0, 0)

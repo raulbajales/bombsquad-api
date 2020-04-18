@@ -22,7 +22,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
   }
 
   "GameService" should "be able to start a new game and store it" in {
-    TestGameService.startNewGame(ctxt.username, 5, 5, 0).map { gameId =>
+    TestGameService.startNewGame(ctxt.username, GameRequest(5, 5, 0)).map { gameId =>
       ctxt.calls.dequeue() should be(("findUserByUsername", User(ctxt.username)))
       ctxt.calls.dequeue() should be(("createGame", ctxt.game))
       ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
@@ -32,7 +32,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
   }
 
   "GameService" should "be able to pause a running game and store it" in {
-    TestGameService.startNewGame(ctxt.username, 5, 5, 0).flatMap { gameId =>
+    TestGameService.startNewGame(ctxt.username, GameRequest(5, 5, 0)).flatMap { gameId =>
       ctxt.calls.dequeue() should be(("findUserByUsername", User(ctxt.username)))
       ctxt.calls.dequeue() should be(("createGame", ctxt.game))
       ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
@@ -49,7 +49,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
   }
 
   "GameService" should "be able to cancel a running game and store it" in {
-    TestGameService.startNewGame(ctxt.username, 5, 5, 0).flatMap { gameId =>
+    TestGameService.startNewGame(ctxt.username, GameRequest(5, 5, 0)).flatMap { gameId =>
       ctxt.calls.dequeue() should be(("findUserByUsername", User(ctxt.username)))
       ctxt.calls.dequeue() should be(("createGame", ctxt.game))
       ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
@@ -66,7 +66,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
   }
 
   "GameService" should "be able to flag a cell in a running game and store it" in {
-    TestGameService.startNewGame(ctxt.username, 5, 5, 0).flatMap { gameId =>
+    TestGameService.startNewGame(ctxt.username, GameRequest(5, 5, 0)).flatMap { gameId =>
       ctxt.calls.dequeue() should be(("findUserByUsername", User(ctxt.username)))
       ctxt.calls.dequeue() should be(("createGame", ctxt.game))
       ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
@@ -86,7 +86,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
   }
 
   "GameService" should "be able to uncover a cell in a running game and store it" in {
-    TestGameService.startNewGame(ctxt.username, 5, 5, 0).flatMap { gameId =>
+    TestGameService.startNewGame(ctxt.username, GameRequest(5, 5, 0)).flatMap { gameId =>
       ctxt.calls.dequeue() should be(("findUserByUsername", User(ctxt.username)))
       ctxt.calls.dequeue() should be(("createGame", ctxt.game))
       ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
@@ -106,7 +106,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
   }
 
   "GameService" should "be able to get game state in a running game and store it" in {
-    TestGameService.startNewGame(ctxt.username, 5, 5, 0).flatMap { gameId =>
+    TestGameService.startNewGame(ctxt.username, GameRequest(5, 5, 0)).flatMap { gameId =>
       ctxt.calls.dequeue() should be(("findUserByUsername", User(ctxt.username)))
       ctxt.calls.dequeue() should be(("createGame", ctxt.game))
       ctxt.calls.dequeue() should be(("updateGame", ctxt.game))
