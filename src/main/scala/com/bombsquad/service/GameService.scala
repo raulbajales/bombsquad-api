@@ -1,8 +1,7 @@
 package com.bombsquad.service
 
-import com.bombsquad.AppConf
 import com.bombsquad.exception.{GameDoesNotBelongToUserException, UserCreationException}
-import com.bombsquad.model.{Game, GameList, User}
+import com.bombsquad.model.{Game, GameList, GameRequest, User}
 import com.bombsquad.repository.{GameRepository, UserRepository}
 import org.mongodb.scala.bson.ObjectId
 
@@ -20,12 +19,11 @@ trait GameService {
   }
 
   def startNewGame(username: String,
-                   rows: Int = AppConf.defaultRows,
-                   cols: Int = AppConf.defaultRows,
-                   bombs: Int = AppConf.defaultBombs): Future[String] = {
+                   gameRequest: GameRequest): Future[String] = {
     require(username != null && !username.isBlank, "username is required")
+    require(gameRequest != null, "gameRequest is required")
     findUserByUsername(username).flatMap { _ =>
-      createGame(username, rows, cols, bombs).flatMap { game =>
+      createGame(username, gameRequest).flatMap { game =>
         game.start()
         updateGame(game).map(_._id.toString)
       }

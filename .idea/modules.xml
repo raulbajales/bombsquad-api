@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsqad-api.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsqad-api.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsqad-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsqad-api-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bombsquad-api.herokuPackage.iml" filepath="$PROJECT_DIR$/.idea/modules/bombsquad-api.herokuPackage.iml" />
     </modules>
   </component>
 </project>

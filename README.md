@@ -13,7 +13,7 @@ $ sbt test
 
 ### Deploy on heroku:
 ```
-$ sbt stage deployHeroku
+$ sbt herokuPackage/stage deployHeroku
 
 After that the app is running in:
 https://bombsquad-api.herokuapp.com/bombsquad
