@@ -1,7 +1,7 @@
 package com.bombsquad.service
 
-import com.bombsquad.exception.{GameDoesNotBelongToUserException, UserCreationException}
-import com.bombsquad.model.{Game, GameList, GameRequest, User}
+import com.bombsquad.controller.{GameDoesNotBelongToUserException, UserCreationException, UserLoginException}
+import com.bombsquad.model._
 import com.bombsquad.repository.{GameRepository, UserRepository}
 import org.mongodb.scala.bson.ObjectId
 
@@ -15,6 +15,13 @@ trait GameService {
     require(user != null, "user is required")
     createUser(user).recover {
       case e => throw UserCreationException(e.getMessage)
+    }
+  }
+
+  def loginUser(login: LoginUserRequest): Future[User] = {
+    require(login != null, "login user request is required")
+    findUserByUsernameAndPassword(login.username, login.password).recover {
+      case e => throw UserLoginException(e.getMessage)
     }
   }
 

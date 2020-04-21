@@ -9,6 +9,7 @@ mainClass in Compile := Some("com.bombsquad.QuickstartApp")
 scalaVersion := "2.12.7"
 herokuJdkVersion in Compile := "11"
 herokuAppName in Compile := "bombsquad-api"
+
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
@@ -18,6 +19,7 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.0",
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.mongodb.scala" %% "mongo-scala-driver" % "4.0.2",
+  "com.pauldijou" %% "jwt-spray-json" % "4.2.0",
 
   "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
   "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,

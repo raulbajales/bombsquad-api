@@ -4,18 +4,19 @@ import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives.{as, complete, entity, onSuccess, pathPrefix, post, _}
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 import com.bombsquad.AppConf
 import com.bombsquad.JsonFormats._
-import com.bombsquad.model.{Game, GameList, GameRequest, User}
+import com.bombsquad.model._
 import com.bombsquad.service.GameProtocol
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.Future
 
-class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val system: ActorSystem[_]) extends LazyLogging {
+class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val system: ActorSystem[_]) extends LazyLogging with JwtSupport {
 
   private implicit val timeout: Timeout = Timeout.create(AppConf.controllerRoutesAskTimeout)
 
@@ -32,66 +33,90 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
             }
           }
         },
-        path("users" / Segment / "games") { username =>
+        path("users" / "login") {
+          //  Login user:
+          //  POST /bombsquad/users/login
+          post {
+            entity(as[LoginUserRequest]) { login =>
+              logger.info(s"Will login user ${login.username}")
+              onSuccess(loginUser(login)) { _ =>
+                respondWithHeader(RawHeader(JWT_ACCESS_TOKEN_HEADER_NAME, newJwtToken(login.username))) {
+                  complete(StatusCodes.OK)
+                }
+              }
+            }
+          }
+        },
+        headerValueByName(JWT_ACCESS_TOKEN_HEADER_NAME) { token: String =>
           concat(
-            // Start new game:
-            // POST /bombsquad/users/{username}/games
-            post {
-              entity(as[GameRequest]) { gameRequest =>
-                logger.info(s"Will create game $gameRequest")
-                onSuccess(startNewGame(username, gameRequest))(complete(StatusCodes.Created, _))
+            path("users" / Segment / "games") { username =>
+              concat(
+                // Start new game:
+                // POST /bombsquad/users/{username}/games
+                post {
+                  entity(as[GameRequest]) { gameRequest =>
+                    logger.info(s"Will create game $gameRequest")
+                    checkJwtToken(token, username)
+                    onSuccess(startNewGame(username, gameRequest))(complete(StatusCodes.Created, _))
+                  }
+                },
+                // List games for
+                // GET /bombsquad/users/{username}/games
+                get {
+                  onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
+                }
+              )
+            },
+            path("users" / Segment / "games" / Segment) { (username, gameId) =>
+              // Game state
+              // GET /bombsquad/users/{username}/games/{gameId}
+              get {
+                logger.info(s"Will get game state for user $username and game $gameId")
+                checkJwtToken(token, username)
+                onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
               }
             },
-            // List games for
-            // GET /bombsquad/users/{username}/games
-            get {
-              onSuccess(listGamesFor(username))(complete(StatusCodes.OK, _))
+            path("users" / Segment / "games" / Segment / "pause") { (username, gameId) =>
+              // Pause game:
+              // PUT /bombsquad/users/{username}/games/{gameId}/pause
+              put {
+                logger.info(s"Will pause game $gameId for user $username")
+                checkJwtToken(token, username)
+                onSuccess(pauseGame(username, gameId))(complete(StatusCodes.OK, _))
+              }
+            },
+            path("users" / Segment / "games" / Segment / "cancel") { (username, gameId) =>
+              // Cancel game
+              // PUT /bombsquad/users/{username}/games/{gameId}/cancel
+              put {
+                logger.info(s"Will cancel game $gameId for user $username")
+                checkJwtToken(token, username)
+                onSuccess(cancelGame(username, gameId))(complete(StatusCodes.OK, _))
+              }
+            },
+            path("users" / Segment / "games" / Segment / "flag") { (username, gameId) =>
+              // Flag cell
+              // PUT /bombsquad/users/{username}/games/{gameId}/flag?row={row}&col={col}
+              parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
+                put {
+                  logger.info(s"Will flag/unflag cell row $row, col $col, for game $gameId and user $username")
+                  checkJwtToken(token, username)
+                  onSuccess(flagCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
+                }
+              }
+            },
+            path("users" / Segment / "games" / Segment / "uncover") { (username, gameId) =>
+              // Uncover cell
+              // PUT /bombsquad/users/{username}/games/{gameId}/uncover?row={row}&col={col}
+              parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
+                put {
+                  logger.info(s"Will uncover cell row $row, col $col, for game $gameId and user $username")
+                  checkJwtToken(token, username)
+                  onSuccess(uncoverCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
+                }
+              }
             }
           )
-        },
-        path("users" / Segment / "games" / Segment) { (username, gameId) =>
-          // Game state
-          // GET /bombsquad/users/{username}/games/{gameId}
-          get {
-            logger.info(s"Will get game state for user $username and game $gameId")
-            onSuccess(gameState(username, gameId))(complete(StatusCodes.OK, _))
-          }
-        },
-        path("users" / Segment / "games" / Segment / "pause") { (username, gameId) =>
-          // Pause game:
-          // PUT /bombsquad/users/{username}/games/{gameId}/pause
-          put {
-            logger.info(s"Will pause game $gameId for user $username")
-            onSuccess(pauseGame(username, gameId))(complete(StatusCodes.OK, _))
-          }
-        },
-        path("users" / Segment / "games" / Segment / "cancel") { (username, gameId) =>
-          // Cancel game
-          // PUT /bombsquad/users/{username}/games/{gameId}/cancel
-          put {
-            logger.info(s"Will cancel game $gameId for user $username")
-            onSuccess(cancelGame(username, gameId))(complete(StatusCodes.OK, _))
-          }
-        },
-        path("users" / Segment / "games" / Segment / "flag") { (username, gameId) =>
-          // Flag cell
-          // PUT /bombsquad/users/{username}/games/{gameId}/flag?row={row}&col={col}
-          parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
-            put {
-              logger.info(s"Will flag/unflag cell row $row, col $col, for game $gameId and user $username")
-              onSuccess(flagCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
-            }
-          }
-        },
-        path("users" / Segment / "games" / Segment / "uncover") { (username, gameId) =>
-          // Uncover cell
-          // PUT /bombsquad/users/{username}/games/{gameId}/uncover?row={row}&col={col}
-          parameters('row.as[Int], 'col.as[Int]) { (row, col) =>
-            put {
-              logger.info(s"Will uncover cell row $row, col $col, for game $gameId and user $username")
-              onSuccess(uncoverCell(username, gameId, row, col))(complete(StatusCodes.OK, _))
-            }
-          }
         }
       )
     }
@@ -99,6 +124,10 @@ class GameController(delegate: ActorRef[GameProtocol.Command])(implicit val syst
 
   def signupUser(user: User): Future[Future[User]] = {
     delegate ? (GameProtocol.SignupUserCommand(user, _))
+  }
+
+  def loginUser(login: LoginUserRequest): Future[Future[User]] = {
+    delegate ? (GameProtocol.LoginUserCommand(login, _))
   }
 
   def startNewGame(username: String, gameReq: GameRequest): Future[Future[String]] =

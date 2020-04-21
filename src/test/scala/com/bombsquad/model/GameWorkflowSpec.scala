@@ -2,12 +2,12 @@ package com.bombsquad.model
 
 import java.time.Duration
 
-import org.scalatest.{FlatSpec, Matchers}
+import com.bombsquad.BaseUnitTest
 
-class GameWorkflowSpec extends FlatSpec with Matchers {
+class GameWorkflowSpec extends BaseUnitTest {
 
   "GameWorkflow" should "be be created with current state default to NotStarted" in {
-    GameWorkflow().currentState should be (NotStarted.name)
+    GameWorkflow().currentState should be(NotStarted.name)
   }
 
   "GameWorkflow" should "be able to move into Running if current state is NotStarted" in {

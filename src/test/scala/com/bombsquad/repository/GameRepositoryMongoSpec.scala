@@ -1,13 +1,13 @@
 package com.bombsquad.repository
 
-import com.bombsquad.BaseUnitTest
+import com.bombsquad.BaseUnitTestAsync
 import com.bombsquad.model.{GameRequest, NotStarted, Won}
 import com.bombsquad.repository.impl.GameRepositoryMongo
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class GameRepositoryMongoSpec extends BaseUnitTest {
+class GameRepositoryMongoSpec extends BaseUnitTestAsync {
 
   before {
     Await.result(GameRepo.gameColl.drop().toFuture(), 3 seconds)

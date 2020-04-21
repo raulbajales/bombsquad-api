@@ -38,5 +38,6 @@ object JsonFormats {
   implicit val boardJsonFormat: RootJsonFormat[Board] = jsonFormat1(Board)
   implicit val gameListJsonFormat: RootJsonFormat[GameList] = jsonFormat1(GameList)
   implicit val gameJsonFormat: RootJsonFormat[Game] = jsonFormat4(Game)
-  implicit val userJsonFormat: RootJsonFormat[User] = jsonFormat1(User)
+  implicit val userJsonFormat: RootJsonFormat[User] = jsonFormat2(User)
+  implicit val loginUserRequestJsonFormat: RootJsonFormat[LoginUserRequest] = jsonFormat2(LoginUserRequest)
 }

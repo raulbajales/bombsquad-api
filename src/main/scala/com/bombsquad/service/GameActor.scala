@@ -2,7 +2,7 @@ package com.bombsquad.service
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import com.bombsquad.model.{Game, GameList, GameRequest, User}
+import com.bombsquad.model._
 import org.mongodb.scala.bson.ObjectId
 
 import scala.concurrent.Future
@@ -12,6 +12,8 @@ package object GameProtocol {
   sealed trait Command
 
   final case class SignupUserCommand(user: User, replyTo: ActorRef[Future[User]]) extends Command
+
+  final case class LoginUserCommand(login: LoginUserRequest, replyTo: ActorRef[Future[User]]) extends Command
 
   final case class StartNewGameCommand(username: String, gameRequest: GameRequest, replyTo: ActorRef[Future[String]]) extends Command
 
@@ -35,6 +37,9 @@ trait GameActor {
   val behavior: Behavior[GameProtocol.Command] = Behaviors.receiveMessage {
     case GameProtocol.SignupUserCommand(user, replyTo) =>
       replyTo ! signupUser(user)
+      Behaviors.same
+    case GameProtocol.LoginUserCommand(login, replyTo) =>
+      replyTo ! loginUser(login)
       Behaviors.same
     case GameProtocol.StartNewGameCommand(username, gameRequest, replyTo) =>
       replyTo ! startNewGame(username, gameRequest)

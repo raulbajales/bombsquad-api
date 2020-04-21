@@ -1,15 +1,15 @@
 package com.bombsquad.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import com.bombsquad.BaseUnitTest
 
-class GameSpec extends FlatSpec with Matchers {
+class GameSpec extends BaseUnitTest {
 
   "A NotRunning Game" should "fail when trying to uncover or flag a cell" in {
     val game = Game()
-    a [IllegalStateException] should be thrownBy {
+    a[IllegalStateException] should be thrownBy {
       game.unCoverCell(0, 0)
     }
-    a [IllegalStateException] should be thrownBy {
+    a[IllegalStateException] should be thrownBy {
       game.flagCell(0, 0)
     }
   }

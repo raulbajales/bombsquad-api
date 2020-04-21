@@ -2,9 +2,9 @@ package com.bombsquad.model
 
 import java.time.Duration
 
-import org.scalatest.{FlatSpec, Matchers}
+import com.bombsquad.BaseUnitTest
 
-class StopWatchSpec extends FlatSpec with Matchers {
+class StopWatchSpec extends BaseUnitTest {
 
   "StopWatch" should "count elapsed time even with multiple pauses" in {
     val stopWatch = StopWatch()

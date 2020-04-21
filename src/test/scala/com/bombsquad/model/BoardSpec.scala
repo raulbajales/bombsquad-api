@@ -1,8 +1,8 @@
 package com.bombsquad.model
 
-import org.scalatest.{FlatSpec, Matchers}
+import com.bombsquad.BaseUnitTest
 
-class BoardSpec extends FlatSpec with Matchers {
+class BoardSpec extends BaseUnitTest {
 
   "Board creation" should "fail if no matrix is set" in {
     a[IllegalArgumentException] should be thrownBy {

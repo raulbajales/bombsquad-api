@@ -27,4 +27,10 @@ trait UserRepositoryMongo extends UserRepository with MongoSupport {
     require(username != null && !username.isBlank, "username is required")
     userColl.find(equal("username", username)).head()
   }
+
+  override def findUserByUsernameAndPassword(username: String, password: String): Future[User] = {
+    require(username != null && !username.isBlank, "username is required")
+    require(password != null && !password.isBlank, "password is required")
+    userColl.find(and(equal("username", username), equal("password", password))).head()
+  }
 }

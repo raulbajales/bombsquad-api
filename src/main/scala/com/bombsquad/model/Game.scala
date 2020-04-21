@@ -1,5 +1,6 @@
 package com.bombsquad.model
 
+import com.bombsquad.AppConf
 import org.mongodb.scala.bson.ObjectId
 
 case class Game(_id: ObjectId = new ObjectId(),
@@ -33,3 +34,7 @@ case class Game(_id: ObjectId = new ObjectId(),
 
   def isFinished: Boolean = Set(Won.name, Lost.name, Cancelled.name).contains(workflow.currentState)
 }
+
+case class GameRequest(rows: Int = AppConf.gameDefaultRows, cols: Int = AppConf.gameDefaultCols, bombs: Int = AppConf.gameDefaultBombs)
+
+case class GameList(gameIds: List[String] = List())
