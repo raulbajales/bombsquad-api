@@ -144,7 +144,7 @@ class GameServiceSpec extends AsyncFlatSpec with Matchers with BeforeAndAfter wi
     }
   }
 
-  "GameService" should "be able to get list og game ids for a user" in {
+  "GameService" should "be able to get list of game ids for a user" in {
     TestGameService.listGamesFor(ctxt.username).flatMap { gameList =>
       ctxt.calls.dequeue() should be(("findGameIdsByUsername", ctxt.gameList))
       gameList should be(ctxt.gameList)

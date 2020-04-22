@@ -7,8 +7,6 @@ version := "1.0"
 maintainer := "raul.bajales@gmail.com"
 mainClass in Compile := Some("com.bombsquad.QuickstartApp")
 scalaVersion := "2.12.7"
-herokuJdkVersion in Compile := "11"
-herokuAppName in Compile := "bombsquad-api"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,

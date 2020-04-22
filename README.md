@@ -11,14 +11,6 @@ $ sbt run
 $ sbt test
 ```
 
-### Deploy on heroku:
-```
-$ sbt herokuPackage/stage deployHeroku
-
-After that the app is running in:
-https://bombsquad-api.herokuapp.com/bombsquad
-```
-
 ## Some example usages (running locally):
 
 ### Create a user:
