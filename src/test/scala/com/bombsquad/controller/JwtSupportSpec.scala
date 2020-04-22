@@ -13,7 +13,6 @@ class JwtSupportSpec extends BaseUnitTest {
 
   "JwtSupport" should "be able fail validation for a token that belongs to another username" in {
     object TestJwtSupport extends JwtSupport
-    val username = "username"
     an[JwtTokenException] should be thrownBy {
       TestJwtSupport.checkJwtToken(TestJwtSupport.newJwtToken("someUsername"), "anotherUsername")
     }
